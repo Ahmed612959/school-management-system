@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>ملفي الشخصي - معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="icon" type="image/png" href="/logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(145deg, #f5f7fa 0%, #e9edf2 100%);
+            min-height: 100vh;
+            padding-bottom: 75px;
+        }
+
+        /* ====================== Header رائع ====================== */
+        .header {
+            background: linear-gradient(135deg, #1e3c4a, #0f2c38);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2.5px solid #d4af5a;
+            padding: 3px;
+            background: white;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            color: #d4af5a;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .logout-btn {
+            background: rgba(185, 28, 28, 0.85);
+            color: white;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
+        }
+
+        /* ====================== Container ====================== */
+        .container {
+            max-width: 580px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        /* ====================== Profile Card فاخر ====================== */
+        .profile-card {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .profile-cover {
+            height: 110px;
+            background: linear-gradient(135deg, #1e3c4a, #0f2c38);
+            position: relative;
+        }
+
+        .profile-avatar {
+            position: absolute;
+            bottom: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95px;
+            height: 95px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 5px solid #d4af5a;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: translateX(-50%) scale(1.02);
+        }
+
+        .profile-avatar i {
+            font-size: 48px;
+            color: #1e3c4a;
+        }
+
+        .profile-info {
+            text-align: center;
+            padding: 55px 24px 24px;
+            background: white;
+        }
+
+        .profile-name {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a2e36;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e3c4a;
+            color: #d4af5a;
+            padding: 5px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: #f8f9fc;
+            padding: 10px 18px;
+            border-radius: 20px;
+            min-width: 130px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #1e3c4a;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #7a8b9e;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            padding: 20px 24px;
+            background: #f9fafc;
+            border-top: 1px solid #eef2f6;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1a2e36;
+        }
+
+        .progress-bar-container {
+            background: #e4e9f0;
+            border-radius: 20px;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #d4af5a, #e8c97a);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.6s ease;
+            width: 0%;
+        }
+
+        /* Form Section */
+        .form-section {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #1a2e36;
+            font-size: 0.85rem;
+        }
+
+        .form-group label i {
+            color: #d4af5a;
+            width: 22px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e4e9f0;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #d4af5a;
+            box-shadow: 0 0 0 4px rgba(212, 175, 90, 0.12);
+        }
+
+        .form-group input:disabled {
+            background: #f5f7fa;
+            cursor: not-allowed;
+            color: #8a9ab0;
+        }
+
+        .save-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af5a, #c29d45);
+            color: #1a2e36;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 90, 0.35);
+        }
+
+        /* ====================== Bottom Navigation أنيق ====================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(30, 44, 50, 0.98);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 20px 22px;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            border-top: 1px solid rgba(212, 175, 90, 0.3);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            color: #d4af5a;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            font-size: 0.65rem;
+            color: #d4af5a;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .nav-item.active {
+            background: rgba(212, 175, 90, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .nav-item.active i,
+        .nav-item.active span {
+            color: #d4af5a;
+            opacity: 1;
+        }
+
+        .nav-item:not(.active):hover {
+            transform: translateY(-3px);
+        }
+
+        .nav-item:not(.active):hover i,
+        .nav-item:not(.active):hover span {
+            opacity: 1;
+        }
+
+        /* ====================== Responsive ====================== */
+        @media (max-width: 600px) {
+            .profile-name {
+                font-size: 1.3rem;
+            }
+            
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .profile-avatar i {
+                font-size: 40px;
+            }
+            
+            .profile-stats {
+                gap: 12px;
+            }
+            
+            .stat-item {
+                padding: 8px 12px;
+                min-width: 100px;
+            }
+            
+            .stat-value {
+                font-size: 1rem;
+            }
+            
+            .nav-item i {
+                font-size: 1.1rem;
+            }
+            
+            .nav-item span {
+                font-size: 0.55rem;
+            }
+            
+            .nav-item {
+                padding: 6px 10px;
+            }
+            
+            .bottom-nav {
+                padding: 8px 12px 18px;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .header h1 {
+                font-size: 0.85rem;
+            }
+            
+            .logout-btn span {
+                display: none;
+            }
+            
+            .logout-btn {
+                padding: 8px 12px;
+            }
+            
+            .stat-item {
+                min-width: 85px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-logo">
+        <img src="logo.png" alt="شعار المعهد" class="logo" onerror="this.style.display='none'">
+        <h1><i class="fas fa-user-circle"></i> ملفي الشخصي</h1>
+    </div>
+    <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>خروج</span>
+    </button>
+</header>
+
+<div class="container">
+    <div class="profile-card">
+        <div class="profile-cover"></div>
+        
+        <div class="profile-avatar">
+            <i class="fas fa-user-graduate"></i>
+        </div>
+        
+        <div class="profile-info">
+            <h2 class="profile-name" id="userName">جاري التحميل...</h2>
+            <div class="profile-badge" id="userTypeBadge">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>جاري التحميل</span>
+            </div>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="studentCode">-</div>
+                    <div class="stat-label">آخر 7 أرقام من شهادة الميلاد</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="userGrade">-</div>
+                    <div class="stat-label">الصف الدراسي</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="progress-section">
+            <div class="progress-header">
+                <span><i class="fas fa-chart-line"></i> اكتمال الملف الشخصي</span>
+                <span id="progressPercent" style="color:#d4af5a; font-weight:800;">0%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <form id="profileForm">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> الاسم الكامل</label>
+                    <input type="text" id="fullName" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-at"></i> اسم المستخدم</label>
+                    <input type="text" id="username" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-phone-alt"></i> رقم الهاتف</label>
+                    <input type="tel" id="phone" placeholder="أدخل رقم الهاتف">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-chalkboard-user"></i> الصف الدراسي</label>
+                    <input type="text" id="grade" disabled>
+                </div>
+                
+                <div class="form-group" id="parentNameGroup">
+                    <label><i class="fas fa-user-friends"></i> ولي الأمر</label>
+                    <input type="text" id="parentName" placeholder="اسم ولي الأمر">
+                </div>
+                
+                <div class="form-group" id="parentIdGroup">
+                    <label><i class="fas fa-id-card"></i> رقم بطاقة ولي الأمر</label>
+                    <input type="text" id="parentId" placeholder="رقم البطاقة">
+                </div>
+                
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i>
+                    حفظ التغييرات
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-nav" id="bottomNav"></div>
+
+<script src="profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="csrf-token" content="">
+    <title>تسجيل الحضور - الصف الثالث | معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <link rel="icon" type="image/png" href="/logo.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(145deg, #f0f4f8 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        .attendance-table { width: 100%; overflow-x: auto; }
+        .attendance-table table { width: 100%; border-collapse: collapse; }
+        .attendance-table th, .attendance-table td { padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        .attendance-table th { background: linear-gradient(135deg, #1a4f6e, #0d3b54); color: white; }
+        .btn-attendance { background: #c4a35a; color: #1a4f6e; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-attendance:hover { background: #1a4f6e; color: #c4a35a; transform: translateY(-2px); }
+        .date-picker { text-align: center; margin-bottom: 20px; }
+        .date-picker input { padding: 10px; font-size: 16px; border: 2px solid #c4a35a; border-radius: 12px; }
+        .summary-card { background: linear-gradient(135deg, #1a4f6e, #0d3b54); color: #c4a35a; padding: 20px; border-radius: 20px; margin-bottom: 20px; }
+        .summary-stats { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .stat-box { text-align: center; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 12px; min-width: 120px; }
+        .stat-number { font-size: 28px; font-weight: bold; color: white; }
+        .stat-label { font-size: 14px; }
+        .bulk-buttons { margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .bulk-btn { padding: 10px 20px; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .bulk-present { background: #2d6a4f; color: white; }
+        .bulk-absent { background: #b91c1c; color: white; }
+        .bulk-late { background: #d97706; color: white; }
+        .bulk-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .search-section { margin-bottom: 20px; text-align: center; }
+        .search-input { width: 100%; max-width: 400px; padding: 12px 20px; border: 2px solid #c4a35a; border-radius: 30px; font-size: 16px; outline: none; }
+        .search-input:focus { border-color: #1a4f6e; box-shadow: 0 0 0 4px rgba(196,163,90,0.15); }
+        .search-info { margin-top: 10px; color: #64748b; font-size: 14px; }
+        .grade-tabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+        .grade-tab { padding: 10px 25px; background: #1a4f6e; color: #c4a35a; text-decoration: none; border-radius: 30px; font-weight: bold; transition: all 0.3s; }
+        .grade-tab.active { background: #c4a35a; color: #1a4f6e; }
+        .grade-tab:hover { transform: translateY(-2px); }
+        .logout-btn { background: #b91c1c; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .logout-btn:hover { background: #991b1b; transform: translateY(-2px); }
+        .main-header {
+            background: linear-gradient(135deg, #1a4f6e, #0d3b54);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { width: 55px; border-radius: 50%; border: 2px solid #c4a35a; padding: 3px; background: white; }
+        .main-header h1 { color: #c4a35a; font-size: 1.3rem; }
+        .admin-container { max-width: 1400px; margin: 30px auto; padding: 0 30px 80px; }
+        .submit-btn { background: #c4a35a; color: #1a4f6e; padding: 12px 30px; border-radius: 40px; font-weight: bold; border: none; cursor: pointer; transition: all 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f8fafc;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+        .empty-state i {
+            font-size: 64px;
+            color: #c4a35a;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .empty-state h3 {
+            color: #1a4f6e;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        @media (max-width: 768px) {
+            .main-header { flex-direction: column; text-align: center; gap: 10px; }
+            .admin-container { padding: 0 15px 80px; }
+            .stat-number { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="main-header">
+    <img src="logo.png" alt="شعار المعهد" class="logo" onerror="this.style.display='none'">
+    <h1>📖 تسجيل الحضور والغياب - الصف الثالث</h1>
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+</header>
+
+<div class="admin-container">
+    <div class="grade-tabs">
+        <a href="attendance-first.html" class="grade-tab">🎓 الصف الأول</a>
+        <a href="attendance-second.html" class="grade-tab">📚 الصف الثاني</a>
+        <a href="attendance-third.html" class="grade-tab active">📖 الصف الثالث</a>
+    </div>
+
+    <div class="summary-card">
+        <h3 style="margin-bottom: 15px;">📊 ملخص الحضور لليوم - الصف الثالث</h3>
+        <div class="summary-stats" id="summaryStats">
+            <div class="stat-box"><div class="stat-number" id="totalCount">0</div><div class="stat-label">إجمالي الطلاب</div></div>
+            <div class="stat-box"><div class="stat-number" id="presentCount">0</div><div class="stat-label">✅ حاضرون</div></div>
+            <div class="stat-box"><div class="stat-number" id="absentCount">0</div><div class="stat-label">❌ غائبون</div></div>
+            <div class="stat-box"><div class="stat-number" id="lateCount">0</div><div class="stat-label">⏰ متأخرون</div></div>
+            <div class="stat-box"><div class="stat-number" id="presentPercentage">0%</div><div class="stat-label">نسبة الحضور</div></div>
+        </div>
+    </div>
+
+    <div class="bulk-buttons" id="bulkButtons" style="display: none;">
+        <button class="bulk-btn bulk-present" onclick="bulkUpdate('present')">✅ تحديد الكل حاضر</button>
+        <button class="bulk-btn bulk-absent" onclick="bulkUpdate('absent')">❌ تحديد الكل غائب</button>
+        <button class="bulk-btn bulk-late" onclick="bulkUpdate('late')">⏰ تحديد الكل متأخر</button>
+    </div>
+
+    <div class="date-picker" id="datePicker" style="display: none;">
+        <label for="attendance-date">اختر التاريخ: </label>
+        <input type="date" id="attendance-date" onchange="loadAttendance()">
+    </div>
+
+    <div class="search-section" id="searchSection" style="display: none;">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 ابحث باسم الطالب أو رقم الجلوس..." oninput="filterStudents()">
+        <div class="search-info" id="searchInfo"></div>
+    </div>
+
+    <div id="attendanceTableContainer"></div>
+
+    <div style="margin-top: 20px; text-align: center;" id="saveButtonContainer" style="display: none;">
+        <button class="submit-btn" onclick="saveAttendance()">💾 حفظ جميع التغييرات</button>
+    </div>
+</div>
+
+<script>
+const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+const GRADE = 'third';
+let students = [], filteredStudents = [], attendanceRecords = {};
+let currentDate = new Date().toISOString().split('T')[0];
+
+function getCsrfToken() { return sessionStorage.getItem('csrfToken'); }
+function getLoggedInUser() { const u = sessionStorage.getItem('userData'); return u ? JSON.parse(u) : null; }
+
+function showToast(message, type = 'success') {
+    if (typeof Toastify !== 'undefined') {
+        const bg = type === 'success' ? '#2d6a4f' : type === 'error' ? '#b91c1c' : '#d97706';
+        Toastify({ text: message, duration: 3000, gravity: 'top', position: 'right', backgroundColor: bg, stopOnFocus: true }).showToast();
+    } else { alert(message); }
+}
+
+async function apiRequest(endpoint, options = {}) {
+    const csrfToken = getCsrfToken();
+    const headers = { 'Content-Type': 'application/json', ...options.headers };
+    if (csrfToken && options.method && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.method)) {
+        headers['X-CSRF-Token'] = csrfToken;
+    }
+    const response = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers, credentials: 'include' });
+    if (response.status === 401) {
+        sessionStorage.clear();
+        window.location.href = '/login.html';
+        throw new Error('انتهت الجلسة');
+    }
+    return response;
+}
+
+async function verifyAccess() {
+    const user = getLoggedInUser();
+    if (!user || user.type !== 'admin') {
+        showToast('غير مصرح لك بالدخول إلى هذه الصفحة!', 'error');
+        setTimeout(() => { window.location.href = 'Home.html'; }, 1500);
+        return false;
+    }
+    try {
+        const response = await apiRequest('/api/verify-session');
+        if (!response.ok) throw new Error('جلسة غير صالحة');
+        return true;
+    } catch (error) {
+        showToast('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى', 'error');
+        sessionStorage.clear();
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+        return false;
+    }
+}
+
+function showEmptyState() {
+    const container = document.getElementById('attendanceTableContainer');
+    container.innerHTML = `
+        <div class="empty-state">
+            <i class="fas fa-users-slash"></i>
+            <h3>📭 لا توجد طلاب في هذا الصف</h3>
+            <p>لم يتم تسجيل أي طلاب في الصف الثالث حتى الآن</p>
+            <p style="margin-top: 15px; font-size: 0.85rem;">يمكنك إضافة طلاب من لوحة التحكم</p>
+        </div>
+    `;
+    document.getElementById('bulkButtons').style.display = 'none';
+    document.getElementById('datePicker').style.display = 'none';
+    document.getElementById('searchSection').style.display = 'none';
+    document.getElementById('saveButtonContainer').style.display = 'none';
+    
+    document.getElementById('totalCount').textContent = '0';
+    document.getElementById('presentCount').textContent = '0';
+    document.getElementById('absentCount').textContent = '0';
+    document.getElementById('lateCount').textContent = '0';
+    document.getElementById('presentPercentage').textContent = '0%';
+}
+
+function showAttendanceTable() {
+    document.getElementById('bulkButtons').style.display = 'flex';
+    document.getElementById('datePicker').style.display = 'block';
+    document.getElementById('searchSection').style.display = 'block';
+    document.getElementById('saveButtonContainer').style.display = 'block';
+}
+
+async function loadStudents() {
+    try {
+        showToast('جاري تحميل بيانات الطلاب...', 'info');
+        const response = await apiRequest(`/api/students/by-grade/${GRADE}`);
+        
+        if (!response.ok) {
+            throw new Error('فشل في جلب البيانات');
+        }
+        
+        students = await response.json();
+        
+        if (!students || students.length === 0) {
+            console.log(`📭 لا يوجد طلاب في الصف ${GRADE}`);
+            showEmptyState();
+            return;
+        }
+        
+        console.log(`✅ تم تحميل ${students.length} طالب من الصف ${GRADE}`);
+        filteredStudents = [...students];
+        document.getElementById('attendance-date').value = currentDate;
+        showAttendanceTable();
+        await loadAttendance();
+        updateSearchInfo();
+        updateSummary();
+        
+    } catch (error) {
+        console.error('Error loading students:', error);
+        if (error.message.includes('404')) {
+            showEmptyState();
+        } else {
+            showToast('خطأ في تحميل بيانات الطلاب: ' + error.message, 'error');
+            showEmptyState();
+        }
+    }
+}
+
+async function loadAttendance() {
+    currentDate = document.getElementById('attendance-date').value;
+    if (!currentDate) return;
+    try {
+        const response = await apiRequest(`/api/attendance/${currentDate}`);
+        const records = await response.json();
+        attendanceRecords = {};
+        records.forEach(record => { attendanceRecords[record.studentCode] = record; });
+        renderAttendanceTable();
+        updateSummary();
+    } catch (error) {
+        console.error('Error loading attendance:', error);
+    }
+}
+
+function filterStudents() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    filteredStudents = searchTerm === '' ? [...students] : students.filter(s => 
+        s.fullName?.toLowerCase().includes(searchTerm) || 
+        s.studentCode?.toLowerCase().includes(searchTerm)
+    );
+    renderAttendanceTable();
+    updateSearchInfo();
+}
+
+function updateSearchInfo() {
+    const searchInfo = document.getElementById('searchInfo');
+    if (searchInfo) {
+        if (filteredStudents.length === 0) {
+            searchInfo.innerHTML = '🔍 لا توجد نتائج مطابقة للبحث';
+        } else if (filteredStudents.length === students.length) {
+            searchInfo.innerHTML = `📋 عرض كل طلاب الصف (${students.length} طالب)`;
+        } else {
+            searchInfo.innerHTML = `🔍 تم العثور على ${filteredStudents.length} طالب من أصل ${students.length}`;
+        }
+    }
+}
+
+function renderAttendanceTable() {
+    const container = document.getElementById('attendanceTableContainer');
+    if (!container) return;
+    
+    if (filteredStudents.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <h3>🔍 لا توجد نتائج</h3>
+                <p>لم يتم العثور على طلاب مطابقين لبحثك</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let tableHtml = `
+        <div class="attendance-table">
+            <div class="table-wrapper">
+                <table id="attendanceTable">
+                    <thead>
+                        <tr><th>#</th><th>رقم الجلوس</th><th>اسم الطالب</th><th>الحالة</th><th>ملاحظة</th><th>إجراء</th></tr>
+                    </thead>
+                    <tbody>
+    `;
+    
+    filteredStudents.forEach((student, index) => {
+        const record = attendanceRecords[student.studentCode];
+        const status = record ? record.status : 'present';
+        const note = record ? (record.note || '') : '';
+        
+        tableHtml += `
+            <tr>
+                <td>${index + 1}</td>
+                <td><strong>${escapeHtml(student.studentCode)}</strong></td>
+                <td style="text-align:right;">${escapeHtml(student.fullName)}</td>
+                <td>
+                    <select class="status-select" data-code="${student.studentCode}">
+                        <option value="present" ${status === 'present' ? 'selected' : ''}>✅ حاضر</option>
+                        <option value="absent" ${status === 'absent' ? 'selected' : ''}>❌ غائب</option>
+                        <option value="late" ${status === 'late' ? 'selected' : ''}>⏰ متأخر</option>
+                    </select>
+                </td>
+                <td><input type="text" class="note-input" data-code="${student.studentCode}" value="${escapeHtml(note)}" placeholder="ملاحظة"></td>
+                <td><button class="btn-attendance" onclick="updateSingle('${student.studentCode}')"><i class="fas fa-save"></i> حفظ</button></td>
+            </tr>
+        `;
+    });
+    
+    tableHtml += `</tbody></table></div></div>`;
+    container.innerHTML = tableHtml;
+}
+
+function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+window.updateSingle = async function(studentCode) {
+    const select = document.querySelector(`.status-select[data-code="${studentCode}"]`);
+    const noteInput = document.querySelector(`.note-input[data-code="${studentCode}"]`);
+    const student = students.find(s => s.studentCode === studentCode);
+    if (!student) return;
+    
+    const data = { studentCode, studentName: student.fullName, date: currentDate, status: select.value, note: noteInput?.value || '', recordedBy: 'admin' };
+    
+    try {
+        const response = await apiRequest('/api/attendance', { method: 'POST', body: JSON.stringify(data) });
+        if (response.ok) { showToast('✅ تم حفظ الحضور بنجاح', 'success'); await loadAttendance(); }
+        else showToast('❌ خطأ في حفظ الحضور', 'error');
+    } catch (error) { showToast('❌ خطأ في الاتصال', 'error'); }
+};
+
+window.bulkUpdate = function(status) {
+    document.querySelectorAll('.status-select').forEach(select => select.value = status);
+    showToast(`✅ تم تغيير جميع الطلاب إلى ${status === 'present' ? 'حاضر' : status === 'absent' ? 'غائب' : 'متأخر'}`, 'info');
+};
+
+window.saveAttendance = async function() {
+    const updates = [];
+    document.querySelectorAll('.status-select').forEach(select => {
+        const studentCode = select.dataset.code;
+        const noteInput = document.querySelector(`.note-input[data-code="${studentCode}"]`);
+        const student = students.find(s => s.studentCode === studentCode);
+        if (student) updates.push({ code: studentCode, name: student.fullName, status: select.value, note: noteInput?.value || '' });
+    });
+    if (updates.length === 0) return;
+    
+    showToast('جاري حفظ التغييرات...', 'info');
+    try {
+        const response = await apiRequest('/api/attendance/bulk', { method: 'POST', body: JSON.stringify({ date: currentDate, students: updates, recordedBy: 'admin' }) });
+        if (response.ok) { showToast('✅ تم حفظ جميع تغييرات الحضور بنجاح', 'success'); await loadAttendance(); }
+        else showToast('❌ خطأ في حفظ التغييرات', 'error');
+    } catch (error) { showToast('❌ خطأ في الاتصال', 'error'); }
+};
+
+function updateSummary() {
+    let present = 0, absent = 0, late = 0;
+    students.forEach(student => {
+        const record = attendanceRecords[student.studentCode];
+        if (record) { 
+            if (record.status === 'present') present++; 
+            else if (record.status === 'absent') absent++; 
+            else if (record.status === 'late') late++; 
+        } else { present++; }
+    });
+    const total = students.length, percentage = total > 0 ? (present / total) * 100 : 0;
+    document.getElementById('totalCount').textContent = total;
+    document.getElementById('presentCount').textContent = present;
+    document.getElementById('absentCount').textContent = absent;
+    document.getElementById('lateCount').textContent = late;
+    document.getElementById('presentPercentage').textContent = percentage.toFixed(1) + '%';
+}
+
+window.logout = async function() {
+    if (confirm('هل تريد تسجيل الخروج؟')) {
+        try { await fetch(`${BASE_URL}/api/logout`, { method: 'POST', credentials: 'include' }); } catch(e) {}
+        sessionStorage.clear();
+        window.location.href = 'login.html';
+    }
+};
+
+(async function init() {
+    const hasAccess = await verifyAccess();
+    if (!hasAccess) return;
+    await loadStudents();
+})();
+</script>
+</body>
+</html>

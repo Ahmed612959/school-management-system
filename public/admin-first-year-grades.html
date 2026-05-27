@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة نتائج السنة الأولى تمريض - معهد رعاية الضبعية</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background: #0a0a0a; color: #e0e0e0; padding: 2rem; }
+        header { text-align: center; margin-bottom: 2rem; }
+        .logo { width: 150px; border-radius: 50%; border: 4px solid #d4af37; box-shadow: 0 0 20px rgba(212,175,55,0.35); }
+        h1 { color: #d4af37; }
+        .upload-area { max-width: 700px; margin: 0 auto; background: #141414; padding: 2rem; border-radius: 16px; border: 1px solid #3a3a3a; }
+        input, button { display: block; width: 100%; margin: 1rem 0; padding: 1rem; font-size: 1.1rem; }
+        button { background: #d4af37; color: #0f0f0f; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        button:hover { background: #b8972e; }
+        #progress { margin: 1rem 0; color: #d4af37; font-size: 1.3rem; text-align: center; display: none; }
+        #results { margin-top: 2rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 1rem; border: 1px solid #444; text-align: center; }
+        th { background: #222; color: #d4af37; }
+        .footer { text-align: center; margin-top: 3rem; color: #777; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="logo.png" alt="شعار المعهد" class="logo">
+    <h1>إدارة نتائج السنة الأولى تمريض</h1>
+</header>
+
+<div class="upload-area">
+    <h2>رفع PDF أو صورة الكشف</h2>
+    <p>ارفع الملف، وسيتم استخراج الأسماء + أرقام الجلوس + المواد + الدرجات التحريرية + المجموع + التربية الدينية.</p>
+    
+    <input type="file" id="file-input" accept="image/*,.pdf">
+    <button onclick="analyzeFile()">تحليل الملف</button>
+</div>
+
+<div id="progress">جاري التحليل...</div>
+<div id="results"></div>
+
+<div class="footer">
+    Developed by Ahmed Moussa ♥
+</div>
+
+<script>
+    async function analyzeFile() {
+        const file = document.getElementById('file-input').files[0];
+        if (!file) return alert('ارفع ملف أولاً');
+
+        document.getElementById('progress').style.display = 'block';
+
+        let text = '';
+
+        if (file.type === 'application/pdf') {
+            const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                text += content.items.map(item => item.str).join(' ') + '\n';
+            }
+        } else {
+            alert('الرجاء رفع PDF فقط للدقة الأفضل');
+            return;
+        }
+
+        // استخراج البيانات
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+        const results = [];
+        let currentStudent = null;
+        let currentSeat = null;
+        let currentSubjects = [];
+        let totalSix = 'غير متوفر';
+        let religious = 'غير متوفر';
+
+        for (const line of lines) {
+            // كشف رقم الجلوس + الاسم
+            const seatNameMatch = line.match(/^(\d+)\s*([أ-ي\s]+)$/);
+            if (seatNameMatch) {
+                currentSeat = seatNameMatch[1].trim();
+                currentStudent = seatNameMatch[2].trim();
+                continue;
+            }
+
+            // كشف اسم المادة ودرجة
+            const subjectGradeMatch = line.match(/([أ-ي\s]+)\s*(\d+)\s*[من\/]\s*(\d+)/);
+            if (subjectGradeMatch && currentStudent) {
+                const subject = subjectGradeMatch[1].trim();
+                const grade = `${subjectGradeMatch[2]} من ${subjectGradeMatch[3]}`;
+                currentSubjects.push({ subject, grade });
+            }
+
+            // كشف المجموع الكلي للـ 6 مواد
+            const totalSixMatch = line.match(/المجموع\s*(\d+)\s*[من\/]\s*(\d+)/);
+            if (totalSixMatch) {
+                totalSix = `${totalSixMatch[1]} من ${totalSixMatch[2]}`;
+            }
+
+            // كشف التربية الدينية
+            const religiousMatch = line.match(/التربية الدينية\s*(\d+)\s*[من\/]\s*(\d+)/);
+            if (religiousMatch) {
+                religious = `${religiousMatch[1]} من ${religiousMatch[2]}`;
+            }
+
+            // إضافة الطالب لو كمل
+            if (currentStudent && (currentSubjects.length === 6 || religious !== 'غير متوفر')) {
+                results.push({
+                    studentName: currentStudent,
+                    seatNumber: currentSeat,
+                    subjects: currentSubjects,
+                    totalSix,
+                    religious
+                });
+                currentSubjects = [];
+                currentStudent = null;
+                currentSeat = null;
+            }
+        }
+
+        const resultsDiv = document.getElementById('results');
+        document.getElementById('progress').style.display = 'none';
+
+        if (results.length > 0) {
+            resultsDiv.innerHTML = '<h2>النتائج المستخرجة</h2>';
+            results.forEach((r, index) => {
+                resultsDiv.innerHTML += `
+                    <h3>الطالب ${index + 1}: ${r.studentName} (رقم الجلوس: ${r.seatNumber})</h3>
+                    <table>
+                        <thead><tr><th>المادة</th><th>الدرجة</th></tr></thead>
+                        <tbody>
+                            \( {r.subjects.map(s => `<tr><td> \){s.subject}</td><td>${s.grade}</td></tr>`).join('')}
+                            <tr><td>المجموع الكلي للـ 6 مواد</td><td>${r.totalSix}</td></tr>
+                            <tr><td>التربية الدينية (خارج المجموع)</td><td>${r.religious}</td></tr>
+                        </tbody>
+                    </table>
+                `;
+            });
+        } else {
+            resultsDiv.innerHTML = '<p style="color:#ff6b6b">لم يتم العثور على بيانات صالحة</p>';
+        }
+
+        // حفظ في backend لو عايز (fetch('/api/save-results', { method: 'POST', body: JSON.stringify(results) }));
+    }
+</script>
+
+</body>
+</html>

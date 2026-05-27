@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta name="csrf-token" content="">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <title>لوحة تحكم الأدمن - معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="icon" type="image/png" href="/logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="class-buttons-bar">
+    <a href="class-first.html" class="class-btn">
+        <i class="fas fa-users-cog"></i> 👥 إدارة الطلاب
+    </a>
+</div>
+
+<header class="main-header">
+    <img src="logo.png" alt="شعار المعهد" class="logo" onerror="this.style.display='none'">
+    <h1>لوحة تحكم الأدمن - معهد رعاية الضبعية الفني للتمريض</h1>
+    <div class="header-buttons">
+        <button class="home-btn" onclick="window.location.href='Home.html'"><i class="fas fa-home"></i> الرئيسية</button>
+        <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+    </div>
+</header>
+
+<div class="admin-container">
+    <div class="admin-welcome-message"></div>
+
+    <!-- ====================== إدارة الأدمنز ====================== -->
+    <h2><i class="fas fa-user-shield"></i> إدارة الأدمنز</h2>
+    <div class="manage-users-section">
+        <h3>➕ إضافة أدمن جديد</h3>
+        <form id="add-user-form">
+            <div class="input-group">
+                <label for="admin-name">الاسم الكامل</label>
+                <input type="text" id="admin-name" placeholder="أدخل الاسم الكامل" required>
+            </div>
+            <div class="input-group">
+                <label for="admin-username">اسم المستخدم</label>
+                <input type="text" id="admin-username" placeholder="أدخل اسم المستخدم" required>
+            </div>
+            <div class="input-group">
+                <label for="admin-password">كلمة المرور</label>
+                <input type="password" id="admin-password" placeholder="أدخل كلمة المرور" required>
+            </div>
+            <button type="submit" class="submit-btn"><i class="fas fa-plus"></i> إضافة أدمن</button>
+        </form>
+        <h3>📋 قائمة الأدمنز</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>الاسم الكامل</th><th>اسم المستخدم</th><th>إجراء</th></tr></thead>
+                <tbody id="users-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+<!-- ====================== أزرار تسجيل الحضور ====================== -->
+<h2><i class="fas fa-calendar-alt"></i> تسجيل الحضور والغياب</h2>
+<div class="grade-buttons" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 20px 0;">
+    <a href="attendance-first.html" class="class-btn" style="background: linear-gradient(135deg, #1a4f6e, #0d3b54); color: #c4a35a; text-decoration: none; padding: 12px 28px; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s;">
+        <i class="fas fa-calendar-check"></i> 🎓 الصف الأول
+    </a>
+    <a href="attendance-second.html" class="class-btn" style="background: linear-gradient(135deg, #1a4f6e, #0d3b54); color: #c4a35a; text-decoration: none; padding: 12px 28px; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s;">
+        <i class="fas fa-calendar-check"></i> 📚 الصف الثاني
+    </a>
+    <a href="attendance-third.html" class="class-btn" style="background: linear-gradient(135deg, #1a4f6e, #0d3b54); color: #c4a35a; text-decoration: none; padding: 12px 28px; border-radius: 50px; font-weight: bold; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s;">
+        <i class="fas fa-calendar-check"></i> 📖 الصف الثالث
+    </a>
+</div>
+    <!-- ====================== إضافة نتيجة طالب ====================== -->
+    <h2><i class="fas fa-edit"></i> إضافة / تعديل نتيجة طالب</h2>
+    <div class="add-result-section">
+        <form id="add-result-form">
+            <div class="input-group">
+                <label for="student-name"><i class="fas fa-user"></i> اسم الطالب</label>
+                <input type="text" id="student-name" placeholder="أدخل اسم الطالب رباعي" required>
+            </div>
+            <div class="input-group">
+                <label for="student-id"><i class="fas fa-id-card"></i> رقم الجلوس</label>
+                <input type="text" id="student-id" placeholder="رقم الجلوس (1-7 أرقام)" required maxlength="7">
+            </div>
+            <div class="input-group">
+                <label for="semester"><i class="fas fa-calendar-alt"></i> الترم</label>
+                <select id="semester" onchange="toggleSubjects()">
+                    <option value="first">الترم الأول</option>
+                    <option value="second">الترم الثاني</option>
+                </select>
+            </div>
+            <div class="input-group"><label>📖 مبادئ وأسس تمريض</label><input type="number" id="subject1" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group"><label>📚 اللغة العربية</label><input type="number" id="subject2" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group"><label>🇬🇧 اللغة الإنجليزية</label><input type="number" id="subject3" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group"><label>⚡ الفيزياء</label><input type="number" id="subject4" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group"><label>🧪 الكيمياء</label><input type="number" id="subject5" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group"><label>🩺 التشريح / علم وظائف الأعضاء</label><input type="number" id="subject6" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group"><label>🕌 التربية الدينية</label><input type="number" id="subject7" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group"><label>💻 الكمبيوتر</label><input type="number" id="subject8" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group" id="history-group"><label>📜 التاريخ</label><input type="number" id="subject9" min="0" max="100" placeholder="0-100"></div>
+            <div class="input-group" id="geography-group" style="display:none;"><label>🌍 الجغرافيا</label><input type="number" id="subject10" min="0" max="100" placeholder="0-100"></div>
+            <button type="submit" class="submit-btn"><i class="fas fa-save"></i> حفظ النتيجة</button>
+        </form>
+    </div>
+
+    <!-- ====================== قائمة النتائج ====================== -->
+    <h2><i class="fas fa-chart-line"></i> قائمة النتائج</h2>
+    <div class="filter-section">
+        <select id="filter-select">
+            <option value="all">📋 الكل</option>
+            <option value="passed">✅ الناجحين فقط</option>
+            <option value="failed">❌ الراسبين فقط</option>
+        </select>
+    </div>
+    <div class="search-section">
+        <input type="text" id="search-input" class="search-bar" placeholder="🔍 ابحث باسم الطالب أو رقم الجلوس">
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>الطالب</th><th>المواد والدرجات</th><th>المجموع</th><th>النسبة</th><th>الإجراءات</th></tr></thead>
+            <tbody id="results-table-body"></tbody>
+        </table>
+    </div>
+    <button id="export-excel" class="submit-btn"><i class="fas fa-file-excel"></i> تصدير إلى Excel</button>
+
+    <!-- ====================== إدارة الإنذارات والمخالفات ====================== -->
+    <h2><i class="fas fa-exclamation-triangle"></i> إدارة الإنذارات والمخالفات</h2>
+    <div class="violations-section">
+        <form id="add-violation-form">
+            <div class="input-group">
+                <label for="violation-student-id"><i class="fas fa-id-card"></i> رقم الجلوس</label>
+                <input type="text" id="violation-student-id" placeholder="أدخل رقم الجلوس" required>
+            </div>
+            <div class="input-group">
+                <label for="violation-type"><i class="fas fa-tag"></i> النوع</label>
+                <select id="violation-type">
+                    <option value="warning">⚠️ إنذار</option>
+                    <option value="violation">🚫 مخالفة</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="violation-reason"><i class="fas fa-pen"></i> السبب</label>
+                <textarea id="violation-reason" rows="3" placeholder="اكتب سبب الإنذار/المخالفة" required></textarea>
+            </div>
+            <div class="input-group">
+                <label for="violation-penalty"><i class="fas fa-gavel"></i> العقوبة</label>
+                <input type="text" id="violation-penalty" placeholder="مثال: إنذار شفوي / حرمان من الحافلة" required>
+            </div>
+            <div class="input-group">
+                <label><input type="checkbox" id="parent-summons"> <i class="fas fa-phone-alt"></i> استدعاء ولي الأمر</label>
+            </div>
+            <div class="input-group parent-phone-group">
+                <label for="parent-phone"><i class="fab fa-whatsapp"></i> رقم ولي الأمر (واتساب)</label>
+                <input type="tel" id="parent-phone" placeholder="مثال: 01012345678" dir="ltr">
+                <small>📱 سيتم إرسال إشعار واتساب تلقائياً عند إضافة المخالفة</small>
+            </div>
+            <button type="submit" class="submit-btn"><i class="fas fa-plus-circle"></i> إضافة إنذار/مخالفة</button>
+            <button type="button" id="cancelEditViolationBtn" class="submit-btn" style="display:none; background:#6c757d;">❌ إلغاء التعديل</button>
+        </form>
+
+        <h3><i class="fas fa-list"></i> قائمة الإنذارات والمخالفات</h3>
+        <div class="violations-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-id-card"></i> رقم الجلوس</th>
+                        <th><i class="fas fa-user"></i> اسم الطالب</th>
+                        <th><i class="fas fa-tag"></i> النوع</th>
+                        <th><i class="fas fa-pen"></i> السبب</th>
+                        <th><i class="fas fa-gavel"></i> العقوبة</th>
+                        <th><i class="fas fa-phone-alt"></i> استدعاء ولي الأمر</th>
+                        <th><i class="fas fa-cogs"></i> الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="violations-table-body">
+                    <tr><td colspan="7" style="text-align:center;">⏳ جاري تحميل البيانات...<\/td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ====================== إحصائيات ====================== -->
+    <h2><i class="fas fa-chart-bar"></i> إحصائيات سريعة</h2>
+    <div class="stats-section" id="stats-section"></div>
+
+    <!-- ====================== إدارة الإشعارات ====================== -->
+    <h2><i class="fas fa-bell"></i> إدارة الإشعارات العامة</h2>
+    <div class="notifications-section">
+        <div class="input-group">
+            <label for="notification-text">نص الإشعار</label>
+            <textarea id="notification-text" rows="3" placeholder="أدخل نص الإشعار الذي سيظهر لجميع الطلاب"></textarea>
+        </div>
+        <button class="submit-btn" onclick="addNotification()"><i class="fas fa-plus-circle"></i> إضافة إشعار</button>
+        <div class="table-wrapper" style="margin-top:20px;">
+            <table>
+                <thead><tr><th>نص الإشعار</th><th>تاريخ الإضافة</th><th>إجراء</th></tr></thead>
+                <tbody id="notifications-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ====================== إنشاء اختبار إلكتروني ====================== -->
+    <h2><i class="fas fa-laptop-code"></i> إنشاء اختبار إلكتروني</h2>
+    <div class="exam-form-container">
+        <div class="input-group"><label for="exam-name">اسم الاختبار</label><input type="text" id="exam-name" placeholder="مثال: اختبار منتصف الفصل"></div>
+        <div class="input-group"><label for="exam-code">كود الاختبار</label><input type="text" id="exam-code" placeholder="أدخل كود فريد (مثل EXAM001)"></div>
+        <div class="input-group"><label for="exam-stage">المرحلة</label><select id="exam-stage"><option value="first">الأولى ثانوي</option><option value="second">الثانية ثانوي</option></select></div>
+        <div class="input-group"><label for="exam-duration">المدة (بالدقائق)</label><input type="number" id="exam-duration" min="1" placeholder="30"></div>
+        
+        <div class="question-form">
+            <h3>➕ إضافة سؤال</h3>
+            <div class="input-group"><label for="question-type">نوع السؤال</label>
+                <select id="question-type">
+                    <option value="multiple">اختياري</option>
+                    <option value="essay">مقالي</option>
+                    <option value="truefalse">صح/خطأ</option>
+                </select>
+            </div>
+            <div id="question-inputs"></div>
+            <button type="button" id="add-question" class="submit-btn"><i class="fas fa-plus"></i> إضافة السؤال</button>
+        </div>
+        <div id="questions-list"></div>
+        <button type="button" id="save-exam" class="submit-btn"><i class="fas fa-save"></i> حفظ الاختبار</button>
+    </div>
+
+    <!-- ====================== نتائج الاختبارات ====================== -->
+    <h2><i class="fas fa-poll"></i> نتائج الاختبارات</h2>
+    <div class="input-group"><label for="results-exam-code">كود الاختبار</label><input type="text" id="results-exam-code" placeholder="أدخل كود الاختبار"></div>
+    <button id="fetch-results" class="submit-btn"><i class="fas fa-search"></i> عرض النتائج</button>
+    <div id="exam-results-list" class="test-results-table"></div>
+</div>
+
+<!-- ====================== قائمة الاختبارات ====================== -->
+<h2><i class="fas fa-list-alt"></i> قائمة الاختبارات</h2>
+<div class="exams-list-section">
+    <div class="table-wrapper">
+        <table id="exams-list-table">
+            <thead>
+                <tr>
+                    <th>اسم الاختبار</th>
+                    <th>كود الاختبار</th>
+                    <th>المرحلة</th>
+                    <th>المدة (دقائق)</th>
+                    <th>عدد الأسئلة</th>
+                    <th>تاريخ الإنشاء</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="exams-list-body">
+                <tr><td colspan="7" style="text-align:center;">⏳ جاري تحميل الاختبارات...<\/td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer>
+    <p>Developed by Ahmed Moussa <span class="heart">❤</span></p>
+</footer>
+
+<!-- أزرار السهم -->
+<div class="scroll-buttons">
+    <button class="scroll-btn scroll-up" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+    <button class="scroll-btn scroll-down" onclick="scrollToBottom()"><i class="fas fa-arrow-down"></i></button>
+</div>
+
+<script src="auth.js"></script>
+<script src="admin.js"></script>
+
+<script>
+    (function() {
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    })();
+    
+    window.scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollToBottom = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    
+    window.toggleSubjects = function() {
+        const semester = document.getElementById('semester')?.value;
+        const historyGroup = document.getElementById('history-group');
+        const geographyGroup = document.getElementById('geography-group');
+        if (historyGroup && geographyGroup) {
+            historyGroup.style.display = semester === 'first' ? 'block' : 'none';
+            geographyGroup.style.display = semester === 'first' ? 'none' : 'block';
+        }
+    };
+    toggleSubjects();
+</script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>الاختبارات الإلكترونية - معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="icon" type="image/png" href="/logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(145deg, #f0f4f8 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding-bottom: 85px;
+        }
+
+        /* ====================== Header ====================== */
+        .header {
+            background: linear-gradient(135deg, #1e3c4a, #0f2c38);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2.5px solid #d4af5a;
+            padding: 3px;
+            background: white;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            color: #d4af5a;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .logout-btn {
+            background: rgba(185, 28, 28, 0.85);
+            color: white;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
+        }
+
+        /* ====================== Container ====================== */
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* ====================== Exam Access Card ====================== */
+        .exam-card {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1e3c4a, #0f2c38);
+            padding: 25px;
+            text-align: center;
+        }
+
+        .card-header .icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(212, 175, 90, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            border: 2px solid #d4af5a;
+        }
+
+        .card-header .icon i {
+            font-size: 32px;
+            color: #d4af5a;
+        }
+
+        .card-header h2 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .card-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        /* ====================== Form ====================== */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #1a2e36;
+            font-size: 0.9rem;
+        }
+
+        .form-group label i {
+            color: #d4af5a;
+            width: 22px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e4e9f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #d4af5a;
+            box-shadow: 0 0 0 4px rgba(212, 175, 90, 0.12);
+        }
+
+        /* ====================== Exam Container ====================== */
+        .exam-container {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        .exam-header {
+            background: linear-gradient(135deg, #1e3c4a, #0f2c38);
+            padding: 20px 25px;
+            text-align: center;
+        }
+
+        .exam-header h2 {
+            color: #d4af5a;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .timer-box {
+            background: rgba(212, 175, 90, 0.15);
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #d4af5a;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .timer-box i {
+            font-size: 1.2rem;
+        }
+
+        .questions-section {
+            padding: 30px;
+        }
+
+        .question {
+            background: #f9fafc;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #eef2f6;
+            transition: all 0.3s ease;
+        }
+
+        .question:hover {
+            border-color: #d4af5a;
+            box-shadow: 0 4px 15px rgba(212, 175, 90, 0.1);
+        }
+
+        .question-text {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a2e36;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eef2f6;
+        }
+
+        .question-text i {
+            color: #d4af5a;
+            margin-left: 8px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(212, 175, 90, 0.08);
+        }
+
+        .option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #d4af5a;
+            cursor: pointer;
+        }
+
+        .option label {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .essay-answer textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e4e9f0;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            font-family: 'Tajawal', sans-serif;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .essay-answer textarea:focus {
+            outline: none;
+            border-color: #d4af5a;
+            box-shadow: 0 0 0 4px rgba(212, 175, 90, 0.12);
+        }
+
+        .list-answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .list-item span {
+            width: 35px;
+            font-weight: 700;
+            color: #d4af5a;
+        }
+
+        .list-item input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid #e4e9f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .list-item input:focus {
+            outline: none;
+            border-color: #d4af5a;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af5a, #c29d45);
+            color: #1a2e36;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 90, 0.35);
+        }
+
+        /* ====================== Bottom Navigation ====================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(30, 44, 50, 0.98);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 20px 22px;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            border-top: 1px solid rgba(212, 175, 90, 0.3);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            color: #d4af5a;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+            font-size: 0.65rem;
+            color: #d4af5a;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .nav-item.active {
+            background: rgba(212, 175, 90, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .nav-item.active i,
+        .nav-item.active span {
+            color: #d4af5a;
+            opacity: 1;
+        }
+
+        .nav-item:not(.active):hover {
+            transform: translateY(-3px);
+        }
+
+        .nav-item:not(.active):hover i,
+        .nav-item:not(.active):hover span {
+            opacity: 1;
+        }
+
+        /* ====================== Responsive ====================== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.2rem;
+            }
+            
+            .card-body {
+                padding: 20px;
+            }
+            
+            .questions-section {
+                padding: 20px;
+            }
+            
+            .question {
+                padding: 15px;
+            }
+            
+            .nav-item i {
+                font-size: 1.1rem;
+            }
+            
+            .nav-item span {
+                font-size: 0.55rem;
+            }
+            
+            .nav-item {
+                padding: 6px 10px;
+            }
+            
+            .bottom-nav {
+                padding: 8px 12px 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 0.85rem;
+            }
+            
+            .logout-btn span {
+                display: none;
+            }
+            
+            .logout-btn {
+                padding: 8px 12px;
+            }
+            
+            .card-header .icon {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .card-header .icon i {
+                font-size: 25px;
+            }
+            
+            .timer-box {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-logo">
+        <img src="logo.png" alt="شعار المعهد" class="logo" onerror="this.style.display='none'">
+        <h1><i class="fas fa-book"></i> الاختبارات الإلكترونية</h1>
+    </div>
+    <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>خروج</span>
+    </button>
+</header>
+
+<div class="container">
+    <!-- قسم إدخال كود الاختبار -->
+    <div id="exam-access" class="exam-card">
+        <div class="card-header">
+            <div class="icon">
+                <i class="fas fa-key"></i>
+            </div>
+            <h2>الوصول إلى الاختبار</h2>
+            <p>أدخل كود الاختبار الخاص بك لبدء الاختبار</p>
+        </div>
+        <div class="card-body">
+            <form id="exam-access-form">
+                <div class="form-group">
+                    <label><i class="fas fa-qrcode"></i> كود الاختبار</label>
+                    <input type="text" id="exam-code" placeholder="مثال: EXAM001" required>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-play"></i> بدء الاختبار
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- قسم عرض الاختبار -->
+    <div id="exam-container" style="display: none;">
+        <div class="exam-container">
+            <div class="exam-header">
+                <h2 id="exam-title"></h2>
+                <div class="timer-box">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span id="timer">الوقت المتبقي: --:--</span>
+                </div>
+            </div>
+            <div class="questions-section">
+                <form id="exam-form"></form>
+                <button id="submit-exam" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> إرسال الإجابات
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-nav" id="bottomNav"></div>
+
+<script src="exams.js"></script>
+</body>
+</html>

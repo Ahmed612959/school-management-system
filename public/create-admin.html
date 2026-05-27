@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب أدمن - معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="/logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2526, #2f3b3c);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-header {
+            background: #1a2526;
+            color: #d4af37;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        .logo {
+            width: 60px;
+            border-radius: 50%;
+            border: 2px solid #d4af37;
+            padding: 3px;
+        }
+        .main-header h1 {
+            font-size: 1.3rem;
+        }
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .form-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #d4af37;
+        }
+        h2 {
+            color: #1a2526;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1a2526;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d4af37;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #1a2526;
+            box-shadow: 0 0 5px rgba(26,37,38,0.3);
+        }
+        .submit-btn {
+            background: #d4af37;
+            color: #1a2526;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .submit-btn:hover {
+            background: #1a2526;
+            color: #d4af37;
+            transform: scale(1.02);
+        }
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        footer {
+            background: #1a2526;
+            color: #d4af37;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        hr {
+            margin: 20px 0;
+            border-color: #d4af37;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <img src="logo.png" alt="شعار المعهد" class="logo" onerror="this.style.display='none'">
+        <h1>🔐 إنشاء حساب أدمن جديد</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="form-container">
+            <h2><i class="fas fa-user-shield"></i> بيانات الأدمن الجديد</h2>
+            <div id="messageArea"></div>
+            <div id="dbStatus" class="message info" style="display: none;"></div>
+            
+            <form id="create-admin-form">
+                <div class="input-group">
+                    <label for="fullName"><i class="fas fa-user"></i> الاسم الكامل</label>
+                    <input type="text" id="fullName" placeholder="مثال: أحمد محمد علي" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="username"><i class="fas fa-envelope"></i> اسم المستخدم</label>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="password"><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور (6 أحرف على الأقل)" required>
+                </div>
+                <div class="input-group">
+                    <label for="confirmPassword"><i class="fas fa-check-circle"></i> تأكيد كلمة المرور</label>
+                    <input type="password" id="confirmPassword" placeholder="أعد كتابة كلمة المرور" required>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-plus-circle"></i> إنشاء حساب أدمن
+                </button>
+            </form>
+            
+            <hr>
+            
+            <div class="back-link">
+                <a href="login.html"><i class="fas fa-arrow-right"></i> العودة إلى صفحة تسجيل الدخول</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Developed by Ahmed Moussa <span class="heart">❤</span></p>
+    </footer>
+
+    <script>
+        // تحديد الرابط الصحيح حسب البيئة
+        const BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000' 
+            : 'https://school-system-fiv.vercel.app';
+        
+        console.log('🌐 BASE_URL:', BASE_URL);
+
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = `<div class="message ${type}"><i class="fas ${type === 'success' ? 'fa-check-circle' : (type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle')}"></i> ${message}</div>`;
+            setTimeout(() => {
+                if (document.getElementById('messageArea').innerHTML === messageArea.innerHTML) {
+                    messageArea.innerHTML = '';
+                }
+            }, 8000);
+        }
+
+        // التحقق من اتصال السيرفر
+        async function checkServer() {
+            try {
+                const response = await fetch(`${BASE_URL}/api/test`);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Server is running:', data);
+                    if (data.mongodb_status === 'connected') {
+                        showMessage('✅ السيرفر وقاعدة البيانات متصلان بنجاح', 'info');
+                    } else {
+                        showMessage('⚠️ السيرفر يعمل ولكن قاعدة البيانات غير متصلة', 'info');
+                    }
+                    return true;
+                }
+            } catch (error) {
+                console.error('Server connection error:', error);
+                showMessage('❌ لا يمكن الاتصال بالسيرفر! تأكد من تشغيل السيرفر على المنفذ 3000', 'error');
+                return false;
+            }
+            return false;
+        }
+
+        // إنشاء حساب أدمن
+        document.getElementById('create-admin-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // التحقق من صحة البيانات
+            if (!fullName || !username || !password) {
+                showMessage('⚠️ يرجى إدخال جميع البيانات!', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('❌ كلمة المرور وتأكيدها غير متطابقين!', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل!', 'error');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإنشاء...';
+            submitBtn.disabled = true;
+            
+            try {
+                console.log('📤 Sending request to:', `${BASE_URL}/api/create-admin`);
+                console.log('📦 Data:', { fullName, username, password: '***' });
+                
+                const response = await fetch(`${BASE_URL}/api/create-admin`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ fullName, username, password })
+                });
+                
+                console.log('📥 Response status:', response.status);
+                
+                // محاولة قراءة الـ response كـ JSON
+                let data;
+                const textResponse = await response.text();
+                console.log('📄 Raw response:', textResponse);
+                
+                try {
+                    data = JSON.parse(textResponse);
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    showMessage('❌ خطأ في استجابة السيرفر: ' + textResponse.substring(0, 200), 'error');
+                    return;
+                }
+                
+                if (response.ok && data.success) {
+                    showMessage(`✅ ${data.message}<br>📝 اسم المستخدم: ${username}<br>🔑 كلمة المرور: ${password}`, 'success');
+                    document.getElementById('create-admin-form').reset();
+                    
+                    // توجيه تلقائي بعد 3 ثواني
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 4000);
+                } else {
+                    showMessage(`❌ ${data.error || 'فشل إنشاء الحساب!'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                showMessage(`❌ حدث خطأ في الاتصال بالسيرفر: ${error.message}`, 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // التحقق من السيرفر عند تحميل الصفحة
+        setTimeout(checkServer, 500);
+    </script>
+</body>
+</html>

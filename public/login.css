@@ -1,0 +1,415 @@
+/* ============================================
+   تصميم صفحة تسجيل الدخول - بنفس استايل الموقع
+   معهد رعاية الضبعية الفني للتمريض
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Tajawal', 'Inter', sans-serif;
+    background: linear-gradient(145deg, #f0f4f8 0%, #e2e8f0 100%);
+    color: #1e293b;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* ========== الهيدر ========== */
+.main-header {
+    background: linear-gradient(135deg, #0f2b3d 0%, #1a4f6e 100%);
+    padding: 16px 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-bottom: 4px solid #d4af37;
+}
+
+.logo {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 50%;
+    background: white;
+    padding: 5px;
+    transition: all 0.3s ease;
+    border: 2px solid #d4af37;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.logo:hover {
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+.main-header h1 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #d4af37;
+    text-align: center;
+    margin: 0;
+}
+
+/* ========== الحاوية الرئيسية ========== */
+.main-container {
+    max-width: 1400px;
+    margin: 32px auto;
+    padding: 0 32px 80px 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 180px);
+}
+
+/* ========== بطاقة تسجيل الدخول ========== */
+.login-form-container {
+    background: white;
+    border-radius: 32px;
+    padding: 40px 45px;
+    box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    width: 100%;
+    max-width: 500px;
+    transition: all 0.3s ease;
+}
+
+.login-form-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 55px -15px rgba(0, 0, 0, 0.2);
+}
+
+/* أيقونة البطاقة */
+.login-icon {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.login-icon i {
+    font-size: 3.5rem;
+    color: #d4af37;
+    background: linear-gradient(135deg, #1a4f6e, #0d3b54);
+    padding: 20px;
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-container h2 {
+    color: #1a4f6e;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 4px solid #d4af37;
+    display: inline-block;
+    width: auto;
+}
+
+/* ========== الحقول ========== */
+.input-group {
+    margin-bottom: 22px;
+}
+
+.input-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+.input-group label i {
+    color: #d4af37;
+    width: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 18px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.2);
+    transform: translateY(-1px);
+}
+
+/* ========== زر تسجيل الدخول ========== */
+.submit-btn {
+    background: linear-gradient(135deg, #d4af37 0%, #b8942e 100%);
+    color: #0f2b3d;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 60px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.05);
+    box-shadow: 0 12px 25px rgba(212, 175, 55, 0.5);
+}
+
+.submit-btn i {
+    font-size: 1rem;
+}
+
+/* ========== رابط إنشاء حساب ========== */
+.signup-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.signup-link a {
+    color: #d4af37;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.signup-link a:hover {
+    color: #1a4f6e;
+    transform: translateX(-3px);
+}
+
+/* رابط ولي الأمر */
+.parent-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.parent-link a {
+    color: #1a4f6e;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.parent-link a:hover {
+    color: #d4af37;
+    transform: translateX(-3px);
+}
+
+/* ========== رسائل الخطأ ========== */
+.error-message {
+    background: linear-gradient(135deg, #fee2e2, #fee2e2);
+    color: #b91c1c;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-right: 4px solid #b91c1c;
+}
+
+.error-message i {
+    font-size: 1rem;
+}
+
+.success-message {
+    background: linear-gradient(135deg, #e8f5ed, #e8f5ed);
+    color: #2d6a4f;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-right: 4px solid #2d6a4f;
+}
+
+/* ========== الفوتر ========== */
+footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    background: transparent;
+}
+
+.heart {
+    color: #b91c1c;
+    animation: heartbeat 1.5s ease infinite;
+    display: inline-block;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* ========== شريط التمرير ========== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1a4f6e;
+}
+
+/* ========== التجاوب مع الشاشات ========== */
+@media (max-width: 768px) {
+    .main-header {
+        padding: 15px 20px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .main-header h1 {
+        font-size: 1rem;
+    }
+    
+    .logo {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .main-container {
+        padding: 0 20px 80px 20px;
+    }
+    
+    .login-form-container {
+        padding: 30px 25px;
+        max-width: 95%;
+    }
+    
+    .login-form-container h2 {
+        font-size: 1.3rem;
+    }
+    
+    .login-icon i {
+        font-size: 2.5rem;
+        padding: 15px;
+    }
+    
+    .input-group input {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .submit-btn {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-header {
+        padding: 12px 16px;
+    }
+    
+    .logo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .main-header h1 {
+        font-size: 0.85rem;
+    }
+    
+    .main-container {
+        padding: 0 15px 80px 15px;
+    }
+    
+    .login-form-container {
+        padding: 20px;
+    }
+    
+    .login-form-container h2 {
+        font-size: 1.1rem;
+    }
+    
+    .login-icon i {
+        font-size: 2rem;
+        padding: 12px;
+    }
+    
+    .input-group label {
+        font-size: 0.8rem;
+    }
+    
+    .input-group input {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+    
+    .submit-btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+    
+    .signup-link {
+        font-size: 0.75rem;
+    }
+}
+
+/* ========== تأثيرات إضافية ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-form-container {
+    animation: fadeInUp 0.5s ease-out;
+}

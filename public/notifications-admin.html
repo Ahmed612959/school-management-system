@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الإشعارات - معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <style>
+        .notification-card { background: white; border-radius: 15px; padding: 25px; margin-bottom: 25px; border: 1px solid #d4af37; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px; }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #1a2526; }
+        .stat-label { color: #666; }
+        .send-btn { background: #28a745; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        .send-btn:hover { background: #218838; }
+        .test-btn { background: #d4af37; color: #1a2526; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <img src="logo.png" alt="شعار المعهد" class="logo">
+        <h1>🔔 إدارة الإشعارات - Push Notifications</h1>
+        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </header>
+
+    <div class="admin-container">
+        <!-- إحصائيات -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="subscribersCount">0</div>
+                <div class="stat-label">المشتركين في الإشعارات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="lastSent">-</div>
+                <div class="stat-label">آخر إشعار مرسل</div>
+            </div>
+        </div>
+
+        <!-- نموذج إرسال إشعار -->
+        <div class="notification-card">
+            <h2><i class="fas fa-bell"></i> إرسال إشعار جديد</h2>
+            
+            <div class="form-group">
+                <label>نوع المستخدمين</label>
+                <select id="userType">
+                    <option value="all">الكل (طلاب + أدمن)</option>
+                    <option value="student">الطلاب فقط</option>
+                    <option value="admin">الأدمن فقط</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>عنوان الإشعار</label>
+                <input type="text" id="notificationTitle" placeholder="مثال: نتيجة الترم الأول" value="📢 إشعار جديد من المعهد">
+            </div>
+            
+            <div class="form-group">
+                <label>محتوى الإشعار</label>
+                <textarea id="notificationBody" rows="3" placeholder="أدخل نص الإشعار هنا...">تم تحديث النتائج، يرجى الدخول للمشاهدة</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>رابط (اختياري)</label>
+                <input type="text" id="notificationUrl" placeholder="/Home.html أو /admin.html" value="/">
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="send-btn" onclick="sendNotification()">
+                    <i class="fas fa-paper-plane"></i> إرسال الإشعار
+                </button>
+                <button class="test-btn" onclick="sendTestNotification()">
+                    <i class="fas fa-vial"></i> اختبار (لنفسي)
+                </button>
+            </div>
+        </div>
+        
+        <!-- سجل الإشعارات المرسلة -->
+        <div class="notification-card">
+            <h2><i class="fas fa-history"></i> سجل الإشعارات</h2>
+            <div id="notificationsHistory">
+                <p style="color: #666; text-align: center;">لا توجد إشعارات مرسلة بعد</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let subscribersCount = 0;
+        
+        // تحميل عدد المشتركين
+        async function loadSubscribersCount() {
+            try {
+                const res = await fetch('/api/notifications/subscribers');
+                const data = await res.json();
+                document.getElementById('subscribersCount').textContent = data.count || 0;
+                subscribersCount = data.count || 0;
+            } catch(e) { console.error(e); }
+        }
+        
+        // إرسال إشعار
+        async function sendNotification() {
+            const userType = document.getElementById('userType').value;
+            const title = document.getElementById('notificationTitle').value;
+            const body = document.getElementById('notificationBody').value;
+            const url = document.getElementById('notificationUrl').value;
+            
+            if (subscribersCount === 0) {
+                showToast('⚠️ لا يوجد مشتركين في الإشعارات! الطلاب لم يفعّلوا الإشعارات بعد.', 'error');
+                return;
+            }
+            
+            showToast('📡 جاري إرسال الإشعارات...', 'info');
+            
+            try {
+                const res = await fetch('/api/notifications/send-all', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userType, title, body, url })
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    showToast(`✅ تم إرسال الإشعار إلى ${result.sent} من أصل ${result.total} مستخدم`, 'success');
+                    addToHistory(title, body, result.sent, result.total);
+                } else {
+                    showToast('❌ فشل إرسال الإشعارات', 'error');
+                }
+            } catch (error) {
+                showToast('❌ خطأ في الاتصال بالخادم', 'error');
+            }
+        }
+        
+        // إرسال إشعار اختباري للنفس
+        async function sendTestNotification() {
+            // يجب أن يكون المستخدم مشترك أولاً
+            if (!('Notification' in window)) {
+                showToast('⚠️ متصفحك لا يدعم الإشعارات', 'error');
+                return;
+            }
+            
+            if (Notification.permission === 'granted') {
+                new Notification('🔔 إشعار اختباري', {
+                    body: 'هذا إشعار تجريبي، إذا وصلتك هذه الرسالة فالإشعارات تعمل بشكل صحيح!',
+                    icon: '/logo.png'
+                });
+                showToast('✅ تم إرسال إشعار تجريبي', 'success');
+            } else {
+                showToast('⚠️ يرجى تفعيل الإشعارات أولاً من المتصرب', 'error');
+            }
+        }
+        
+        // إضافة إلى السجل
+        function addToHistory(title, body, sent, total) {
+            const historyDiv = document.getElementById('notificationsHistory');
+            const now = new Date().toLocaleString('ar-EG');
+            
+            if (historyDiv.innerHTML.includes('لا توجد إشعارات')) {
+                historyDiv.innerHTML = '';
+            }
+            
+            const entry = document.createElement('div');
+            entry.style.cssText = 'background: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-right: 4px solid #d4af37;';
+            entry.innerHTML = `
+                <div><strong>${title}</strong></div>
+                <div style="color: #666; font-size: 14px; margin: 5px 0;">${body}</div>
+                <div style="color: #999; font-size: 12px;">📅 ${now} | تم الإرسال إلى ${sent} من ${total}</div>
+            `;
+            historyDiv.insertBefore(entry, historyDiv.firstChild);
+        }
+        
+        function showToast(msg, type) {
+            const bg = type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8';
+            Toastify({ text: msg, duration: 3000, gravity: 'top', position: 'right', backgroundColor: bg }).showToast();
+        }
+        
+        window.logout = function() { localStorage.removeItem('loggedInUser'); window.location.href = 'login.html'; };
+        
+        loadSubscribersCount();
+    </script>
+</body>
+</html>

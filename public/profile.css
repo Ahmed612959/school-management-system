@@ -1,0 +1,250 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background: #f4f4f4;
+    color: #1a2526;
+    direction: rtl;
+    margin-bottom: 70px; /* مساحة للنافبار الثابت */
+}
+
+.container {
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.nav-bar {
+    background: linear-gradient(180deg, #1a2526 0%, #2a3a3b 100%); /* تدرج لوني مطابق لـ index.css */
+    display: flex;
+    justify-content: space-around; /* مطابق لـ index.css */
+    padding: 12px 15px; /* زيادة الحشوة لتكبير النافبار */
+    box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.4); /* ظل مطابق لـ index.css مع تعزيز */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    border-top: 2px solid #d4af37; /* خط ذهبي لجاذبية */
+}
+
+.nav-bar a {
+    color: #d4af37;
+    text-decoration: none;
+    font-size: 1.2em; /* زيادة حجم الأيقونات لتكون أكبر من index.css (1.1em) */
+    transition: all 0.3s ease;
+    padding: 8px; /* حشوة لمنطقة نقر أكبر */
+    position: relative;
+}
+
+.nav-bar a:hover {
+    color: #fff; /* مطابق لـ index.css */
+    transform: scale(1.2); /* تكبير عند التحويم */
+}
+
+.nav-bar a:active {
+    transform: scale(0.95); /* تصغير عند الضغط */
+}
+
+.nav-bar a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: #d4af37;
+    transition: width 0.3s ease;
+}
+
+.nav-bar a:hover::after {
+    width: 80%; /* خط ذهبي يظهر تحت الأيقونة */
+}
+
+.profile-section {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    text-align: center;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.profile-header h3 {
+    font-size: 1.2em;
+    color: #1a2526;
+}
+
+.profile-header .fa-crown {
+    color: #d4af37;
+    font-size: 1em;
+}
+
+.progress-container {
+    margin-bottom: 15px;
+}
+
+.progress-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+progress {
+    width: 100%;
+    height: 15px;
+    border-radius: 8px;
+    background: #e0e0e0;
+}
+
+progress::-webkit-progress-bar {
+    background: #e0e0e0;
+    border-radius: 8px;
+}
+
+progress::-webkit-progress-value {
+    background: #d4af37;
+    border-radius: 8px;
+}
+
+progress::-moz-progress-bar {
+    background: #d4af37;
+    border-radius: 8px;
+}
+
+#progress-percentage {
+    font-size: 0.9em;
+    color: #1a2526;
+    margin-right: 8px;
+}
+
+.input-group {
+    margin-bottom: 12px;
+    text-align: right;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.input-group input,
+.input-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d4af37;
+    border-radius: 5px;
+    font-size: 0.9em;
+    color: #1a2526;
+    background: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: #1a2526;
+    box-shadow: 0 0 5px rgba(26, 37, 38, 0.3);
+}
+
+.input-group input:disabled {
+    background: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.submit-btn {
+    background: #d4af37;
+    color: #1a2526;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+}
+
+.submit-btn:hover {
+    background: #b8972f;
+}
+
+/* التصميم المتجاوب */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .nav-bar {
+        padding: 10px 12px;
+    }
+
+    .nav-bar a {
+        font-size: 1em; /* تقليل حجم الأيقونات على الموبايل */
+        padding: 6px;
+    }
+
+    .profile-section {
+        padding: 10px;
+    }
+
+    .profile-header h3 {
+        font-size: 1em;
+    }
+
+    .profile-header .fa-crown {
+        font-size: 0.8em;
+    }
+
+    .input-group input,
+    .input-group textarea {
+        font-size: 0.85em;
+        padding: 6px;
+    }
+
+    .submit-btn {
+        padding: 6px 12px;
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-bar {
+        padding: 8px 10px;
+    }
+
+    .nav-bar a {
+        font-size: 0.9em; /* أصغر قليلاً للشاشات الصغيرة جدًا */
+        padding: 5px;
+    }
+
+    .profile-section {
+        padding: 8px;
+    }
+
+    .input-group input,
+    .input-group textarea {
+        font-size: 0.8em;
+    }
+
+    .submit-btn {
+        padding: 5px 10px;
+        font-size: 0.8em;
+    }
+}

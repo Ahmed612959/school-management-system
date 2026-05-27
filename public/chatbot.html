@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>المساعد الذكي - معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="icon" type="image/png" href="/logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(145deg, #f0f4f8 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding-bottom: 85px;
+        }
+
+        /* ====================== Header ====================== */
+        .header {
+            background: linear-gradient(135deg, #1e3c4a, #0f2c38);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2.5px solid #d4af5a;
+            padding: 3px;
+            background: white;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            color: #d4af5a;
+            font-weight: 700;
+        }
+
+        .logout-btn {
+            background: rgba(185, 28, 28, 0.85);
+            color: white;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        /* ====================== Container ====================== */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* ====================== Chat Layout ====================== */
+        .chat-layout {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* ====================== Sidebar ====================== */
+        .chat-sidebar {
+            width: 280px;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: calc(100vh - 140px);
+            position: sticky;
+            top: 90px;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #1e3c4a, #0f2c38);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .sidebar-header i {
+            font-size: 40px;
+            color: #d4af5a;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-header h3 {
+            color: white;
+            font-size: 1rem;
+        }
+
+        .sidebar-section {
+            padding: 15px;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .sidebar-section h4 {
+            color: #1a2e36;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .suggestion-chip {
+            background: #f8f9fc;
+            padding: 8px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            color: #1a2e36;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .suggestion-chip:hover {
+            background: #d4af5a;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .feature-btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9fc;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1a2e36;
+        }
+
+        .feature-btn:hover {
+            background: #d4af5a;
+            color: white;
+        }
+
+        /* ====================== Chat Main ====================== */
+        .chat-main {
+            flex: 1;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f9fafc;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #d4af5a, #c29d45);
+        }
+
+        .message.bot .message-avatar {
+            background: linear-gradient(135deg, #1e3c4a, #0f2c38);
+        }
+
+        .message-avatar i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .message-content {
+            flex: 1;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #d4af5a, #c29d45);
+            color: #1a2e36;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            border: 1px solid #eef2f6;
+        }
+
+        .message-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .message-text img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+
+        .message-time {
+            font-size: 0.65rem;
+            color: #999;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #d4af5a;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* ====================== Chat Input ====================== */
+        .chat-input-area {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #eef2f6;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #f8f9fc;
+            border: 1px solid #eef2f6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a2e36;
+        }
+
+        .action-btn:hover {
+            background: #d4af5a;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #eef2f6;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-family: 'Tajawal', sans-serif;
+            resize: none;
+            max-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #d4af5a;
+        }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4af5a, #c29d45);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a2e36;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 90, 0.4);
+        }
+
+        /* ====================== Modal ====================== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: #1a2e36;
+            margin-bottom: 15px;
+        }
+
+        .modal-content input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #d4af5a;
+            border-radius: 16px;
+            margin: 15px 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+        }
+
+        .modal-btn.confirm {
+            background: #d4af5a;
+            color: #1a2e36;
+        }
+
+        .modal-btn.cancel {
+            background: #eef2f6;
+            color: #1a2e36;
+        }
+
+        /* ====================== Bottom Navigation ====================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(30, 44, 50, 0.98);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 20px 22px;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            border-top: 1px solid rgba(212, 175, 90, 0.3);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            color: #d4af5a;
+        }
+
+        .nav-item span {
+            font-size: 0.65rem;
+            color: #d4af5a;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .nav-item.active {
+            background: rgba(212, 175, 90, 0.2);
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .chat-sidebar {
+                display: none;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            .chat-main {
+                height: calc(100vh - 120px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-logo">
+        <img src="logo.png" alt="شعار المعهد" class="logo" onerror="this.style.display='none'">
+        <h1><i class="fas fa-robot"></i> المساعد الذكي - Gemini AI</h1>
+    </div>
+    <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>خروج</span>
+    </button>
+</header>
+
+<div class="container">
+    <div class="chat-layout">
+        <!-- Sidebar -->
+        <div class="chat-sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-crown"></i>
+                <h3>المساعد الذكي</h3>
+            </div>
+            
+            <div class="sidebar-section">
+                <h4><i class="fas fa-bolt"></i> أسئلة سريعة</h4>
+                <div class="suggestion-chip" onclick="quickQuestion('شرح palliative care')">شرح palliative care</div>
+                <div class="suggestion-chip" onclick="quickQuestion('ما هو brain death')">ما هو brain death</div>
+                <div class="suggestion-chip" onclick="quickQuestion('علاج الألم في التمريض')">علاج الألم في التمريض</div>
+                <div class="suggestion-chip" onclick="quickQuestion('الرعاية التلطيفية')">الرعاية التلطيفية</div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h4><i class="fas fa-magic"></i> المميزات</h4>
+                <button class="feature-btn" onclick="openImageModal()">
+                    <i class="fas fa-image"></i> تحليل صورة
+                </button>
+                <button class="feature-btn" onclick="openFileModal()">
+                    <i class="fas fa-file-pdf"></i> رفع ملف PDF
+                </button>
+                <button class="feature-btn" onclick="openExamModal()">
+                    <i class="fas fa-tasks"></i> إنشاء أسئلة من الملف
+                </button>
+                <button class="feature-btn" onclick="openVoiceModal()">
+                    <i class="fas fa-microphone"></i> إدخال صوتي
+                </button>
+            </div>
+            
+            <div class="sidebar-section">
+                <h4><i class="fas fa-chart-line"></i> الإحصائيات</h4>
+                <div style="font-size: 0.75rem; color: #666;">
+                    <p>📊 عدد المحادثات: <span id="chatCount">0</span></p>
+                    <p>💬 آخر نشاط: <span id="lastActivity">-</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Main -->
+        <div class="chat-main">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            👋 أهلاً بك في المساعد الذكي! <br>
+                            أنا هنا لمساعدتك في:<br>
+                            📚 شرح المواد الطبية<br>
+                            🖼️ تحليل الصور<br>
+                            📄 قراءة ملفات PDF<br>
+                            ✍️ إنشاء أسئلة امتحانات<br><br>
+                            اسألني أي شيء!
+                        </div>
+                        <span class="message-time">الآن</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="input-actions">
+                    <button class="action-btn" onclick="openImageModal()" title="تحليل صورة">
+                        <i class="fas fa-image"></i>
+                    </button>
+                    <button class="action-btn" onclick="openFileModal()" title="رفع ملف">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <button class="action-btn" onclick="toggleVoiceInput()" id="voiceBtn" title="إدخال صوتي">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+                <textarea class="chat-input" id="chatInput" rows="1" placeholder="اكتب رسالتك هنا..."></textarea>
+                <button class="send-btn" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-nav" id="bottomNav"></div>
+
+<!-- Modal for Image Upload -->
+<div id="imageModal" class="modal">
+    <div class="modal-content">
+        <i class="fas fa-image" style="font-size: 48px; color: #d4af5a;"></i>
+        <h3>تحليل صورة</h3>
+        <p>ارفع صورة وسأقوم بتحليلها ووصفها</p>
+        <input type="file" id="imageInput" accept="image/*">
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="analyzeImage()">تحليل</button>
+            <button class="modal-btn cancel" onclick="closeModal('imageModal')">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for File Upload -->
+<div id="fileModal" class="modal">
+    <div class="modal-content">
+        <i class="fas fa-file-pdf" style="font-size: 48px; color: #d4af5a;"></i>
+        <h3>رفع ملف PDF</h3>
+        <p>ارفع ملف PDF وسأقوم بقراءة محتواه</p>
+        <input type="file" id="fileInput" accept=".pdf,.txt">
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="analyzeFile()">تحليل</button>
+            <button class="modal-btn cancel" onclick="closeModal('fileModal')">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Exam Generation -->
+<div id="examModal" class="modal">
+    <div class="modal-content">
+        <i class="fas fa-tasks" style="font-size: 48px; color: #d4af5a;"></i>
+        <h3>إنشاء أسئلة من الملف</h3>
+        <p>ارفع ملف وسأقوم بإنشاء أسئلة امتحانات منه</p>
+        <input type="file" id="examFileInput" accept=".pdf,.txt">
+        <select id="questionCount" style="width:100%; padding:10px; margin:15px 0; border-radius:12px; border:1px solid #ddd;">
+            <option value="5">5 أسئلة</option>
+            <option value="10">10 أسئلة</option>
+            <option value="15">15 سؤال</option>
+        </select>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="generateQuestions()">إنشاء الأسئلة</button>
+            <button class="modal-btn cancel" onclick="closeModal('examModal')">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ====================== إعدادات السيرفر ======================
+const BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3000' 
+    : '';
+
+let currentUser = null;
+let isListening = false;
+let recognition = null;
+
+// ====================== دوال مساعدة ======================
+function getLoggedInUser() {
+    const user = sessionStorage.getItem('userData');
+    if (user) return JSON.parse(user);
+    const oldUser = localStorage.getItem('loggedInUser');
+    if (oldUser) return JSON.parse(oldUser);
+    return null;
+}
+
+function showToast(message, type = 'success') {
+    const colors = {
+        success: 'linear-gradient(135deg, #2d6a4f, #1b4d3b)',
+        error: 'linear-gradient(135deg, #b91c1c, #991b1b)',
+        info: 'linear-gradient(135deg, #d97706, #b45309)'
+    };
+    
+    Toastify({
+        text: message,
+        duration: 3000,
+        gravity: 'top',
+        position: 'center',
+        style: {
+            background: colors[type] || colors.success,
+            fontFamily: 'Tajawal, sans-serif',
+            borderRadius: '50px',
+            padding: '12px 24px',
+            direction: 'rtl',
+            fontWeight: '600'
+        }
+    }).showToast();
+}
+
+// ====================== إضافة رسالة ======================
+function addMessage(text, isUser = false, imageUrl = null) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+    
+    let contentHtml = `<div class="message-text">${text.replace(/\n/g, '<br>')}</div>`;
+    if (imageUrl) {
+        contentHtml += `<img src="${imageUrl}" style="max-width: 200px; border-radius: 12px; margin-top: 8px;">`;
+    }
+    contentHtml += `<span class="message-time">${new Date().toLocaleTimeString('ar-EG')}</span>`;
+    
+    messageDiv.innerHTML = `
+        <div class="message-avatar">
+            <i class="${isUser ? 'fas fa-user' : 'fas fa-robot'}"></i>
+        </div>
+        <div class="message-content">
+            ${contentHtml}
+        </div>
+    `;
+    
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    
+    // حفظ المحادثة
+    saveChatHistory();
+}
+
+// ====================== مؤقت الكتابة ======================
+function showTyping() {
+    const messagesDiv = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+        <div class="message-avatar">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="message-content">
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    `;
+    messagesDiv.appendChild(typingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function hideTyping() {
+    const typing = document.getElementById('typingIndicator');
+    if (typing) typing.remove();
+}
+
+// ====================== إرسال رسالة ======================
+async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+    
+    addMessage(message, true);
+    input.value = '';
+    input.style.height = 'auto';
+    
+    showTyping();
+    
+    try {
+        const response = await fetch(`${BASE_URL}/api/gemini`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: message, lang: 'ar' })
+        });
+        
+        hideTyping();
+        
+        if (response.ok) {
+            const data = await response.json();
+            addMessage(data.reply || 'عذراً، لم أستطع فهم سؤالك. حاول مرة أخرى!', false);
+        } else {
+            addMessage('عذراً، حدث خطأ في الاتصال. حاول مرة أخرى!', false);
+        }
+    } catch (error) {
+        hideTyping();
+        addMessage('⚠️ خطأ في الاتصال بالسيرفر. تأكد من اتصالك بالإنترنت.', false);
+    }
+}
+
+// ====================== أسئلة سريعة ======================
+function quickQuestion(question) {
+    document.getElementById('chatInput').value = question;
+    sendMessage();
+}
+
+// ====================== تحليل صورة ======================
+async function analyzeImage() {
+    const fileInput = document.getElementById('imageInput');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showToast('يرجى اختيار صورة أولاً', 'error');
+        return;
+    }
+    
+    closeModal('imageModal');
+    showToast('جاري تحليل الصورة...', 'info');
+    
+    // تحويل الصورة إلى Base64
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const imageData = e.target.result.split(',')[1];
+        
+        addMessage(`[تحليل صورة: ${file.name}]`, true, e.target.result);
+        showTyping();
+        
+        try {
+            const response = await fetch(`${BASE_URL}/api/gemini/vision`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: imageData, prompt: 'حلل هذه الصورة واشرح ما فيها بالتفصيل' })
+            });
+            
+            hideTyping();
+            
+            if (response.ok) {
+                const data = await response.json();
+                addMessage(data.reply || 'تم تحليل الصورة بنجاح!', false);
+            } else {
+                addMessage('عذراً، فشل تحليل الصورة. حاول مرة أخرى!', false);
+            }
+        } catch (error) {
+            hideTyping();
+            addMessage('⚠️ خطأ في تحليل الصورة', false);
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+// ====================== تحليل ملف PDF ======================
+async function analyzeFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showToast('يرجى اختيار ملف أولاً', 'error');
+        return;
+    }
+    
+    closeModal('fileModal');
+    showToast('جاري قراءة الملف...', 'info');
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const fileData = e.target.result.split(',')[1];
+        
+        addMessage(`[تحليل ملف: ${file.name}]`, true);
+        showTyping();
+        
+        try {
+            const response = await fetch(`${BASE_URL}/api/gemini/file`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ file: fileData, filename: file.name, prompt: 'اقرأ هذا الملف واخبرني ملخص عنه' })
+            });
+            
+            hideTyping();
+            
+            if (response.ok) {
+                const data = await response.json();
+                addMessage(data.reply || 'تم تحليل الملف بنجاح!', false);
+            } else {
+                addMessage('عذراً، فشل تحليل الملف. حاول مرة أخرى!', false);
+            }
+        } catch (error) {
+            hideTyping();
+            addMessage('⚠️ خطأ في تحليل الملف', false);
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+// ====================== إنشاء أسئلة من الملف ======================
+async function generateQuestions() {
+    const fileInput = document.getElementById('examFileInput');
+    const file = fileInput.files[0];
+    const count = document.getElementById('questionCount').value;
+    
+    if (!file) {
+        showToast('يرجى اختيار ملف أولاً', 'error');
+        return;
+    }
+    
+    closeModal('examModal');
+    showToast('جاري إنشاء الأسئلة...', 'info');
+    
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const fileData = e.target.result.split(',')[1];
+        
+        addMessage(`[طلب إنشاء ${count} سؤال من ملف: ${file.name}]`, true);
+        showTyping();
+        
+        try {
+            const response = await fetch(`${BASE_URL}/api/gemini/questions`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ file: fileData, filename: file.name, questionCount: count })
+            });
+            
+            hideTyping();
+            
+            if (response.ok) {
+                const data = await response.json();
+                addMessage(data.reply || 'تم إنشاء الأسئلة بنجاح!', false);
+            } else {
+                addMessage('عذراً، فشل إنشاء الأسئلة. حاول مرة أخرى!', false);
+            }
+        } catch (error) {
+            hideTyping();
+            addMessage('⚠️ خطأ في إنشاء الأسئلة', false);
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+// ====================== إدخال صوتي ======================
+function toggleVoiceInput() {
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        showToast('المتصفح لا يدعم الإدخال الصوتي', 'error');
+        return;
+    }
+    
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'ar-EG';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    const voiceBtn = document.getElementById('voiceBtn');
+    
+    recognition.onstart = () => {
+        isListening = true;
+        voiceBtn.style.background = '#b91c1c';
+        voiceBtn.style.color = 'white';
+        showToast('تحدث الآن...', 'info');
+    };
+    
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        document.getElementById('chatInput').value = text;
+        sendMessage();
+    };
+    
+    recognition.onerror = () => {
+        voiceBtn.style.background = '';
+        voiceBtn.style.color = '';
+        showToast('لم يتم التعرف على الصوت، حاول مرة أخرى', 'error');
+    };
+    
+    recognition.onend = () => {
+        isListening = false;
+        voiceBtn.style.background = '';
+        voiceBtn.style.color = '';
+    };
+    
+    recognition.start();
+}
+
+// ====================== Modal functions ======================
+function openImageModal() { document.getElementById('imageModal').classList.add('active'); }
+function openFileModal() { document.getElementById('fileModal').classList.add('active'); }
+function openExamModal() { document.getElementById('examModal').classList.add('active'); }
+function openVoiceModal() { toggleVoiceInput(); }
+function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+
+// ====================== حفظ واستعادة المحادثة ======================
+function saveChatHistory() {
+    const messages = [];
+    document.querySelectorAll('.message').forEach(msg => {
+        const isUser = msg.classList.contains('user');
+        const text = msg.querySelector('.message-text')?.innerHTML || '';
+        messages.push({ text, isUser });
+    });
+    localStorage.setItem('chatbot_history', JSON.stringify(messages));
+}
+
+function loadChatHistory() {
+    const saved = localStorage.getItem('chatbot_history');
+    if (saved) {
+        const messages = JSON.parse(saved);
+        messages.forEach(msg => {
+            addMessage(msg.text.replace(/<br>/g, '\n'), msg.isUser);
+        });
+    }
+}
+
+// ====================== بناء النافبار ======================
+function buildBottomNav() {
+    const navBar = document.getElementById('bottomNav');
+    if (!navBar) return;
+    
+    const isAdmin = currentUser && (currentUser.type === 'admin' || currentUser.role === 'admin');
+    
+    const navItems = [
+        { href: 'Home.html', icon: 'fas fa-home', label: 'الرئيسية' },
+        { href: 'exams.html', icon: 'fas fa-book', label: 'الاختبارات' },
+        { href: 'profile.html', icon: 'fas fa-user', label: 'ملفي' },
+        { href: 'chatbot.html', icon: 'fas fa-robot', label: 'المساعد', active: true }
+    ];
+    
+    if (isAdmin) {
+        navItems.push({ href: 'admin.html', icon: 'fas fa-chalkboard-user', label: 'التحكم' });
+    }
+    
+    navBar.innerHTML = navItems.map(item => `
+        <a href="${item.href}" class="nav-item ${item.active ? 'active' : ''}">
+            <i class="${item.icon}"></i>
+            <span>${item.label}</span>
+        </a>
+    `).join('');
+}
+
+// ====================== تسجيل الخروج ======================
+window.logout = async function() {
+    if (confirm('هل تريد تسجيل الخروج؟')) {
+        sessionStorage.clear();
+        localStorage.removeItem('loggedInUser');
+        window.location.href = 'login.html';
+    }
+};
+
+// ====================== تكبير تلقائي للنص ======================
+document.getElementById('chatInput')?.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+document.getElementById('chatInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+// ====================== تحديث الإحصائيات ======================
+function updateStats() {
+    const messages = document.querySelectorAll('.message').length;
+    document.getElementById('chatCount').textContent = messages;
+    document.getElementById('lastActivity').textContent = new Date().toLocaleTimeString('ar-EG');
+    setInterval(updateStats, 1000);
+}
+
+// ====================== تهيئة الصفحة ======================
+document.addEventListener('DOMContentLoaded', () => {
+    currentUser = getLoggedInUser();
+    buildBottomNav();
+    loadChatHistory();
+    updateStats();
+    
+    if (!currentUser) {
+        showToast('يرجى تسجيل الدخول للحصول على تجربة أفضل', 'info');
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<meta name="csrf-token" content="">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<title>إدارة الطلاب - معهد رعاية الضبعية</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+<link rel="icon" type="image/png" href="/logo.png">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Tajawal', sans-serif;
+        background: linear-gradient(135deg, #1a2526, #2f3b3c);
+        min-height: 100vh;
+    }
+
+    .main-header {
+        background: #1a2526;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #d4af37;
+        padding: 3px;
+        object-fit: cover;
+    }
+
+    .main-header h1 {
+        color: #d4af37;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .header-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .home-btn, .logout-btn {
+        background: #d4af37;
+        color: #1a2526;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: 'Tajawal', sans-serif;
+    }
+
+    .home-btn:hover, .logout-btn:hover {
+        background: #1a2526;
+        color: #d4af37;
+        transform: scale(1.02);
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .welcome-card {
+        background: linear-gradient(135deg, #1a2526, #2f3b3c);
+        border: 1px solid #d4af37;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .welcome-card h2 {
+        color: #d4af37;
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+
+    .welcome-card p {
+        color: #ccc;
+        font-size: 0.9rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-right: 4px solid #d4af37;
+        transition: transform 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .stat-card i {
+        font-size: 2rem;
+        color: #d4af37;
+        margin-bottom: 8px;
+    }
+
+    .stat-card h3 {
+        font-size: 1.8rem;
+        color: #1a2526;
+        margin: 5px 0;
+    }
+
+    .stat-card p {
+        color: #666;
+        font-size: 0.85rem;
+    }
+
+    .search-section {
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        width: 100%;
+        max-width: 400px;
+        padding: 12px 20px;
+        border: 2px solid #d4af37;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        font-family: 'Tajawal', sans-serif;
+        outline: none;
+        transition: all 0.3s;
+    }
+
+    .search-input:focus {
+        border-color: #1a2526;
+        box-shadow: 0 0 8px rgba(212,175,55,0.3);
+    }
+
+    .table-wrapper {
+        background: white;
+        border-radius: 15px;
+        overflow-x: auto;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    th {
+        background: #1a2526;
+        color: #d4af37;
+        padding: 14px 10px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 12px 8px;
+        border-bottom: 1px solid #eee;
+        text-align: center;
+        font-size: 0.8rem;
+        vertical-align: middle;
+    }
+
+    td input, td select {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-family: 'Tajawal', sans-serif;
+        transition: all 0.3s;
+    }
+
+    td input:focus, td select:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: 0 0 5px rgba(212,175,55,0.3);
+    }
+
+    .password-field {
+        font-family: monospace;
+        letter-spacing: 2px;
+    }
+
+    .btn-edit, .btn-save, .btn-delete, .btn-cancel {
+        border: none;
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: bold;
+        transition: all 0.3s;
+        margin: 2px;
+    }
+
+    .btn-edit {
+        background: #d4af37;
+        color: #1a2526;
+    }
+
+    .btn-save {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-edit:hover, .btn-save:hover, .btn-delete:hover, .btn-cancel:hover {
+        transform: translateY(-2px);
+        filter: brightness(0.95);
+    }
+
+    .btn-delete:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-size: 1rem;
+    }
+
+    footer {
+        background: #1a2526;
+        color: #d4af37;
+        text-align: center;
+        padding: 12px;
+        margin-top: 20px;
+        font-size: 0.8rem;
+    }
+
+    .scroll-buttons {
+        position: fixed;
+        right: 15px;
+        bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 999;
+    }
+
+    .scroll-btn {
+        background: #d4af37;
+        color: #1a2526;
+        border: none;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .scroll-btn:hover {
+        background: #1a2526;
+        color: #d4af37;
+        transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+        .main-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        .main-header h1 {
+            font-size: 0.9rem;
+        }
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .stat-card h3 {
+            font-size: 1.3rem;
+        }
+        th, td {
+            font-size: 0.7rem;
+            padding: 8px 4px;
+        }
+        .btn-edit, .btn-save, .btn-delete, .btn-cancel {
+            padding: 4px 8px;
+            font-size: 0.65rem;
+        }
+        .scroll-btn {
+            width: 32px;
+            height: 32px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        .container {
+            padding: 10px;
+        }
+        .welcome-card h2 {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    (function() {
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    })();
+</script>
+</head>
+<body>
+
+<header class="main-header">
+    <img src="logo.png" alt="شعار المعهد" class="logo" onerror="this.style.display='none'">
+    <h1><i class="fas fa-user-graduate"></i> إدارة الطلاب - معهد رعاية الضبعية الفني للتمريض</h1>
+    <div class="header-buttons">
+        <button class="home-btn" onclick="window.location.href='admin.html'">
+            <i class="fas fa-tachometer-alt"></i> لوحة التحكم
+        </button>
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </button>
+    </div>
+</header>
+
+<div class="container">
+    <div class="welcome-card" id="welcomeCard">
+        <h2><i class="fas fa-users"></i> إدارة بيانات الطلاب</h2>
+        <p>يمكنك تعديل جميع بيانات الطلاب (الاسم، اسم المستخدم، كلمة المرور، رقم الجلوس، بيانات ولي الأمر)</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-users"></i>
+            <h3 id="totalStudents">0</h3>
+            <p>إجمالي الطلاب</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-user-check"></i>
+            <h3 id="activeStudents">0</h3>
+            <p>طلاب نشطين</p>
+        </div>
+    </div>
+
+    <div class="search-section">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 ابحث بالاسم أو اسم المستخدم أو رقم الجلوس...">
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>الاسم الكامل</th>
+                    <th>اسم المستخدم</th>
+                    <th>كلمة المرور</th>
+                    <th>رقم الجلوس</th>
+                    <th>رقم الهاتف</th>
+                    <th>ولي الأمر</th>
+                    <th>رقم بطاقة ولي الأمر</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+                <tr><td colspan="9" class="no-data">⏳ جاري تحميل البيانات...<\/td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer>
+    <p>Developed by Ahmed Moussa <span class="heart">❤</span></p>
+</footer>
+
+<div class="scroll-buttons">
+    <button class="scroll-btn" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+    <button class="scroll-btn" onclick="scrollToBottom()"><i class="fas fa-arrow-down"></i></button>
+</div>
+
+<script>
+const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+
+function getCsrfToken() {
+    return sessionStorage.getItem('csrfToken');
+}
+
+function getLoggedInUser() {
+    const userStr = sessionStorage.getItem('userData');
+    if (!userStr) return null;
+    try {
+        return JSON.parse(userStr);
+    } catch {
+        return null;
+    }
+}
+
+function showToast(message, type = 'success') {
+    if (typeof Toastify !== 'undefined') {
+        let background;
+        switch (type) {
+            case 'success': background = 'linear-gradient(135deg, #28a745, #218838)'; break;
+            case 'error': background = 'linear-gradient(135deg, #dc3545, #c82333)'; break;
+            case 'info': background = 'linear-gradient(135deg, #17a2b8, #117a8b)'; break;
+            default: background = '#333';
+        }
+        Toastify({
+            text: message,
+            duration: 3500,
+            gravity: 'top',
+            position: 'right',
+            style: {
+                background: background,
+                fontSize: '15px',
+                fontFamily: '"Tajawal", "Arial", sans-serif',
+                padding: '12px 20px',
+                borderRadius: '10px',
+                direction: 'rtl',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                color: '#fff',
+                textAlign: 'right',
+            },
+        }).showToast();
+    } else {
+        alert(message);
+    }
+}
+
+async function apiRequest(endpoint, options = {}) {
+    const csrfToken = getCsrfToken();
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers
+    };
+    
+    if (csrfToken && options.method && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.method)) {
+        headers['X-CSRF-Token'] = csrfToken;
+    }
+    
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+        ...options,
+        headers,
+        credentials: 'include'
+    });
+    
+    if (response.status === 401) {
+        sessionStorage.clear();
+        window.location.href = '/login.html';
+        throw new Error('انتهت الجلسة');
+    }
+    
+    if (response.status === 403) {
+        showToast('طلب غير مصرح به، يرجى تحديث الصفحة', 'error');
+        throw new Error('CSRF token mismatch');
+    }
+    
+    return response;
+}
+
+async function verifyAdminAccess() {
+    const user = getLoggedInUser();
+    if (!user || user.type !== 'admin') {
+        showToast('غير مصرح لك بالدخول إلى هذه الصفحة!', 'error');
+        setTimeout(() => {
+            window.location.href = 'Home.html';
+        }, 1500);
+        return false;
+    }
+    
+    try {
+        const response = await apiRequest('/api/verify-session');
+        if (!response.ok) {
+            throw new Error('جلسة غير صالحة');
+        }
+        return true;
+    } catch (error) {
+        showToast('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى', 'error');
+        sessionStorage.clear();
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+        return false;
+    }
+}
+
+window.logout = async function() {
+    if (confirm('هل تريد تسجيل الخروج؟')) {
+        try {
+            await fetch(`${BASE_URL}/api/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+        } catch(e) {}
+        sessionStorage.clear();
+        window.location.href = 'login.html';
+    }
+};
+
+window.scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+window.scrollToBottom = () => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+let allStudents = [];
+let editingStudentCode = null;
+
+async function loadStudents() {
+    try {
+        const tbody = document.getElementById('studentsTableBody');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="no-data">⏳ جاري تحميل البيانات...<\/td></tr>';
+        
+        const response = await apiRequest('/api/admin/students');
+        if (!response.ok) {
+            throw new Error('فشل في جلب البيانات');
+        }
+        allStudents = await response.json();
+        
+        document.getElementById('totalStudents').textContent = allStudents.length;
+        document.getElementById('activeStudents').textContent = allStudents.filter(s => s.subjects && s.subjects.length > 0).length;
+        
+        renderStudents(allStudents);
+    } catch (error) {
+        console.error('Error loading students:', error);
+        document.getElementById('studentsTableBody').innerHTML = '<tr><td colspan="9" class="no-data">❌ فشل تحميل البيانات: ' + (error.message || 'خطأ غير معروف') + '<\/td></tr>';
+        showToast('خطأ في تحميل بيانات الطلاب', 'error');
+    }
+}
+
+function renderStudents(students) {
+    const tbody = document.getElementById('studentsTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (!students || students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="no-data">📭 لا يوجد طلاب مسجلين<\/td></tr>';
+        return;
+    }
+
+    students.forEach((student, index) => {
+        const studentCode = student.studentCode;
+        const isEditing = (editingStudentCode === studentCode);
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${isEditing ? `<input type="text" id="fullName-${studentCode}" value="${escapeHtml(student.fullName)}">` : `<span>${escapeHtml(student.fullName)}</span>`}</td>
+            <td>${isEditing ? `<input type="text" id="username-${studentCode}" value="${escapeHtml(student.username)}">` : `<span>${escapeHtml(student.username)}</span>`}</td>
+            <td>${isEditing ? 
+                `<input type="password" id="password-${studentCode}" class="password-field" placeholder="اتركه فارغاً لعدم التغيير">` : 
+                `<span class="password-field">••••••••</span>`}</td>
+            <td>${isEditing ? `<input type="text" id="studentCodeInput-${studentCode}" value="${escapeHtml(student.studentCode || '')}" maxlength="7">` : `<span>${escapeHtml(student.studentCode || '-')}</span>`}</td>
+            <td>${isEditing ? `<input type="tel" id="phone-${studentCode}" value="${escapeHtml(student.profile?.phone || '')}">` : `<span>${escapeHtml(student.profile?.phone || '-')}</span>`}</td>
+            <td>${isEditing ? `<input type="text" id="parentName-${studentCode}" value="${escapeHtml(student.profile?.parentName || '')}">` : `<span>${escapeHtml(student.profile?.parentName || '-')}</span>`}</td>
+            <td>${isEditing ? `<input type="text" id="parentId-${studentCode}" value="${escapeHtml(student.profile?.parentId || '')}" maxlength="14">` : `<span>${escapeHtml(student.profile?.parentId || '-')}</span>`}</td>
+            <td>
+                ${!isEditing ? 
+                    `<button class="btn-edit" onclick="startEdit('${studentCode}')"><i class="fas fa-edit"></i> تعديل</button>
+                     <button class="btn-delete" onclick="deleteStudent('${studentCode}')"><i class="fas fa-trash"></i> حذف</button>` :
+                    `<button class="btn-save" onclick="saveEdit('${studentCode}')"><i class="fas fa-save"></i> حفظ</button>
+                     <button class="btn-cancel" onclick="cancelEdit()"><i class="fas fa-times"></i> إلغاء</button>`
+                }
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function startEdit(studentCode) {
+    editingStudentCode = studentCode;
+    renderStudents(allStudents);
+}
+
+function cancelEdit() {
+    editingStudentCode = null;
+    renderStudents(allStudents);
+}
+
+// ====================== دالة الحفظ المصححة ======================
+async function saveEdit(studentCode) {
+    console.log('🔍 saveEdit called with studentCode:', studentCode);
+    
+    const student = allStudents.find(s => s.studentCode === studentCode);
+    if (!student) {
+        showToast('لم يتم العثور على الطالب', 'error');
+        return;
+    }
+
+    const newStudentCode = document.getElementById(`studentCodeInput-${studentCode}`).value.trim();
+    
+    const updatedData = {
+        fullName: document.getElementById(`fullName-${studentCode}`).value.trim(),
+        username: document.getElementById(`username-${studentCode}`).value.trim(),
+        profile: {
+            phone: document.getElementById(`phone-${studentCode}`).value.trim(),
+            parentName: document.getElementById(`parentName-${studentCode}`).value.trim(),
+            parentId: document.getElementById(`parentId-${studentCode}`).value.trim()
+        }
+    };
+    
+    // إذا تغير رقم الجلوس، أضفه للتحديث
+    if (newStudentCode !== studentCode) {
+        updatedData.studentCode = newStudentCode;
+    }
+    
+    const newPassword = document.getElementById(`password-${studentCode}`).value.trim();
+    if (newPassword !== '') {
+        if (newPassword.length < 6) {
+            showToast('كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل', 'error');
+            return;
+        }
+        updatedData.password = newPassword;
+    }
+
+    // التحقق من البيانات
+    if (!updatedData.fullName) {
+        showToast('الاسم الكامل مطلوب!', 'error');
+        return;
+    }
+    if (!updatedData.username) {
+        showToast('اسم المستخدم مطلوب!', 'error');
+        return;
+    }
+    if (newStudentCode && (newStudentCode.length < 1 || newStudentCode.length > 7)) {
+        showToast('رقم الجلوس يجب أن يكون من 1 إلى 7 أرقام', 'error');
+        return;
+    }
+    if (updatedData.profile.parentId && updatedData.profile.parentId.length !== 14 && updatedData.profile.parentId.length !== 0) {
+        showToast('رقم بطاقة ولي الأمر يجب أن يكون 14 رقم أو اتركه فارغاً', 'error');
+        return;
+    }
+
+    // التحقق من عدم تكرار اسم المستخدم (باستثناء نفس الطالب)
+    const existingUser = allStudents.find(s => s.username === updatedData.username && s.studentCode !== studentCode);
+    if (existingUser) {
+        showToast('اسم المستخدم مستخدم من قبل!', 'error');
+        return;
+    }
+
+    // التحقق من عدم تكرار رقم الجلوس الجديد
+    if (newStudentCode !== studentCode) {
+        const existingCode = allStudents.find(s => s.studentCode === newStudentCode);
+        if (existingCode) {
+            showToast('رقم الجلوس مستخدم من قبل!', 'error');
+            return;
+        }
+    }
+
+    showToast('جاري حفظ التغييرات...', 'info');
+
+    try {
+        const csrfToken = getCsrfToken();
+        console.log(`📤 جاري حفظ التغييرات للطالب: ${studentCode}`);
+        console.log(`📍 URL: ${BASE_URL}/api/students/${encodeURIComponent(studentCode)}`);
+        console.log(`📦 Data:`, updatedData);
+        
+        const response = await fetch(`${BASE_URL}/api/students/${encodeURIComponent(studentCode)}`, {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            credentials: 'include',
+            body: JSON.stringify(updatedData)
+        });
+
+        console.log(`📥 Response status: ${response.status}`);
+
+        if (!response.ok) {
+            let errorMessage = 'فشل الحفظ';
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorMessage;
+            } catch(e) {
+                const errorText = await response.text();
+                errorMessage = errorText || errorMessage;
+            }
+            
+            if (response.status === 401) {
+                showToast('انتهت الجلسة، جاري إعادة التوجيه...', 'error');
+                setTimeout(() => { window.location.href = '/login.html'; }, 1500);
+                return;
+            }
+            if (response.status === 403) {
+                showToast('غير مصرح بهذه العملية، يرجى تحديث الصفحة', 'error');
+                return;
+            }
+            throw new Error(errorMessage);
+        }
+
+        const result = await response.json();
+        console.log('✅ Save success:', result);
+        
+        await loadStudents();
+        editingStudentCode = null;
+        
+        showToast(newPassword !== '' ? 'تم حفظ التغييرات بنجاح! (تم تغيير كلمة المرور)' : 'تم حفظ التغييرات بنجاح!', 'success');
+
+    } catch (error) {
+        console.error('❌ Save error:', error);
+        showToast(error.message || 'حدث خطأ أثناء الحفظ', 'error');
+    }
+}
+
+// ====================== دالة الحذف المصححة ======================
+async function deleteStudent(studentCode) {
+    console.log('🔍 deleteStudent called with studentCode:', studentCode);
+    
+    if (!studentCode) {
+        showToast('خطأ: رقم الجلوس غير موجود!', 'error');
+        return;
+    }
+    
+    if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب؟ لا يمكن التراجع!')) return;
+
+    const deleteBtns = document.querySelectorAll('.btn-delete');
+    deleteBtns.forEach(btn => btn.disabled = true);
+
+    try {
+        const csrfToken = getCsrfToken();
+        console.log(`📤 جاري حذف الطالب برقم الجلوس: ${studentCode}`);
+        console.log(`📍 URL: ${BASE_URL}/api/students/${encodeURIComponent(studentCode)}`);
+        
+        const response = await fetch(`${BASE_URL}/api/students/${encodeURIComponent(studentCode)}`, {
+            method: 'DELETE',
+            headers: { 
+                'X-CSRF-Token': csrfToken
+            },
+            credentials: 'include'
+        });
+
+        console.log(`📥 Response status: ${response.status}`);
+
+        if (!response.ok) {
+            let errorMessage = 'فشل الحذف';
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorMessage;
+            } catch(e) {
+                const errorText = await response.text();
+                errorMessage = errorText || errorMessage;
+            }
+            
+            if (response.status === 401) {
+                showToast('انتهت الجلسة، جاري إعادة التوجيه...', 'error');
+                setTimeout(() => { window.location.href = '/login.html'; }, 1500);
+                return;
+            }
+            if (response.status === 403) {
+                showToast('غير مصرح بهذه العملية، يرجى تحديث الصفحة', 'error');
+                return;
+            }
+            if (response.status === 404) {
+                showToast('الطالب غير موجود في قاعدة البيانات', 'error');
+                return;
+            }
+            throw new Error(errorMessage);
+        }
+
+        const result = await response.json();
+        console.log('✅ Delete success:', result);
+
+        if (editingStudentCode === studentCode) {
+            editingStudentCode = null;
+        }
+        
+        await loadStudents();
+        showToast('✅ تم حذف الطالب بنجاح!', 'success');
+
+    } catch (error) {
+        console.error('❌ Delete error:', error);
+        showToast(error.message || 'حدث خطأ أثناء الحذف', 'error');
+    } finally {
+        deleteBtns.forEach(btn => btn.disabled = false);
+    }
+}
+
+let searchTimeout;
+document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        const value = this.value.toLowerCase();
+        const filtered = allStudents.filter(s =>
+            (s.fullName && s.fullName.toLowerCase().includes(value)) ||
+            (s.username && s.username.toLowerCase().includes(value)) ||
+            (s.studentCode && s.studentCode.toLowerCase().includes(value))
+        );
+        renderStudents(filtered);
+    }, 300);
+});
+
+function renderWelcomeMessage() {
+    const user = getLoggedInUser();
+    const welcomeCard = document.getElementById('welcomeCard');
+    if (welcomeCard && user) {
+        const name = user.fullName || user.username;
+        welcomeCard.innerHTML = `
+            <h2><i class="fas fa-users"></i> مرحباً بك يا أستاذ ${escapeHtml(name)}</h2>
+            <p>يمكنك تعديل جميع بيانات الطلاب (الاسم، اسم المستخدم، كلمة المرور، رقم الجلوس، بيانات ولي الأمر)</p>
+        `;
+    }
+}
+
+(async function init() {
+    const isAdmin = await verifyAdminAccess();
+    if (!isAdmin) return;
+    renderWelcomeMessage();
+    await loadStudents();
+})();
+</script>
+</body>
+</html>

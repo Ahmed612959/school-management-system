@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>معهد رعاية الضبعية الفني للتمريض</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1a2526">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Aldabeia">
+    <link rel="apple-touch-icon" href="/logo.png">
+    
+    <link rel="stylesheet" href="index.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7676282531413677" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="/logo.png">
+</head>
+<body>
+    <div class="splash-wrapper">
+        <div class="splash-header">
+            <img src="logo.png" alt="شعار معهد رعاية الضبعية" class="splash-logo">
+        </div>
+        <div class="splash-content">
+            <h1 class="fade-slide">معهد رعاية الضبعية الفني للتمريض</h1>
+            <h2 class="typing-text"></h2>
+            <p class="splash-subtitle fade-in">نظام ذكي لدعم طلاب التمريض المبدعين</p>
+            <div class="loader">
+                <div class="ecg-spinner"></div>
+                <span>جاري التحميل...</span>
+            </div>
+        </div>
+    </div>
+
+    <footer class="elegant-footer">
+        <p>Developed by Ahmed Moussa <span class="heart">❤</span></p>
+    </footer>
+
+    <script>
+        // تأثير Typing
+        const typingElement = document.querySelector('.typing-text');
+        const texts = ['مرحبًا بكم في نظام النتائج', 'اكتشف نتيجتك بسهولة', 'ابدأ رحلتك التعليمية'];
+        let textIndex = 0, charIndex = 0, isDeleting = false;
+
+        function type() {
+            const currentText = texts[textIndex];
+            if (!isDeleting && charIndex <= currentText.length) {
+                typingElement.textContent = currentText.substring(0, charIndex);
+                charIndex++;
+                setTimeout(type, 80);
+            } else if (isDeleting && charIndex >= 0) {
+                typingElement.textContent = currentText.substring(0, charIndex);
+                charIndex--;
+                setTimeout(type, 50);
+            } else if (!isDeleting && charIndex > currentText.length) {
+                isDeleting = true;
+                setTimeout(type, 1000);
+            } else if (isDeleting && charIndex < 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+                setTimeout(type, 500);
+            }
+        }
+        type();
+
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ Service Worker registered'))
+                    .catch(err => console.log('❌ Service Worker failed:', err));
+            });
+        }
+
+        // الانتقال بعد 3 ثواني
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 3000);
+    </script>
+</body>
+</html>

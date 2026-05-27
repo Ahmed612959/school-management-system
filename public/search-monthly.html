@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتيجة الاختبار الشهري - معهد رعاية الضبعية</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: #111111;
+            padding: clamp(1.5rem, 4vw, 2.5rem) 1rem;
+            text-align: center;
+            border-bottom: 4px solid #d4af37;
+        }
+
+        .logo-container {
+            width: clamp(120px, 25vw, 180px);
+            height: clamp(120px, 25vw, 180px);
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #d4af37;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .header h1 {
+            font-size: clamp(1.6rem, 5vw, 2.2rem);
+            color: #d4af37;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: clamp(2rem, 5vw, 4rem) auto;
+            padding: clamp(1.5rem, 4vw, 3rem);
+            background: #141414;
+            border-radius: 16px;
+            border: 1px solid #3a3a3a;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.08);
+        }
+
+        h2 {
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: clamp(1.5rem, 4.5vw, 1.9rem);
+            font-weight: 700;
+        }
+
+        .search-box {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .search-box label {
+            font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+            font-weight: 600;
+            color: #d4af37;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: clamp(0.9rem, 2.5vw, 1.1rem) 1.3rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            background: #1e1e1e;
+            color: #f0f0f0;
+            border: 2px solid #444;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 5px rgba(212,175,55,0.15);
+        }
+
+        .search-box button {
+            margin-top: 1.5rem;
+            padding: clamp(0.9rem, 2.5vw, 1.1rem) 3rem;
+            background: #d4af37;
+            color: #0f0f0f;
+            border: none;
+            border-radius: 12px;
+            font-size: clamp(1.05rem, 3vw, 1.25rem);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background: #b8972e;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(212,175,55,0.25);
+        }
+
+        #loading {
+            text-align: center;
+            color: #d4af37;
+            font-size: 1.3rem;
+            margin: 2.5rem 0;
+            display: none;
+        }
+
+        #result-container {
+            margin-top: 3rem;
+            display: none;
+        }
+
+        .student-info {
+            background: #1e1e1e;
+            padding: 1.8rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: clamp(1.3rem, 4vw, 1.6rem);
+            font-weight: 700;
+            color: #d4af37;
+            border: 1px solid #444;
+        }
+
+        .subject-card {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 1.6rem;
+            margin: 1.2rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 25px rgba(212,175,55,0.12);
+        }
+
+        .subject-title {
+            font-size: clamp(1.15rem, 3.5vw, 1.35rem);
+            font-weight: 600;
+            color: #e0e0e0;
+            margin-bottom: 0.8rem;
+        }
+
+        .grade {
+            font-size: clamp(1.4rem, 4.5vw, 1.7rem);
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        .month-banner {
+            margin-top: 3rem;
+            padding: 1.6rem;
+            background: #1e1e1e;
+            border-radius: 12px;
+            text-align: center;
+            font-size: clamp(1.25rem, 3.8vw, 1.45rem);
+            font-weight: 700;
+            color: #d4af37;
+            border: 1px solid #444;
+        }
+
+        .no-result {
+            color: #ff6b6b;
+            font-size: 1.4rem;
+            text-align: center;
+            margin-top: 4rem;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem 0;
+            color: #777;
+            font-size: 0.95rem;
+            border-top: 1px solid #333;
+        }
+
+        .footer span {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                margin: 2rem 1rem;
+                padding: 2rem 1.5rem;
+            }
+
+            .header img {
+                max-width: 140px;
+            }
+
+            .search-box input {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .search-box button {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .subject-card {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+    <link rel="icon" type="image/png" href="/logo.png">
+</head>
+<body>
+
+<div class="header">
+    <div class="logo-container">
+        <img src="logo.png" alt="شعار معهد رعاية الضبعية">
+    </div>
+    <h1>استعلام عن نتيجة الاختبار الشهري</h1>
+</div>
+
+<div class="container">
+    <div class="search-box">
+        <label for="student-code">أدخل الكود الخاص بك</label>
+        <input type="text" id="student-code" placeholder="مثال: 123456" autocomplete="off">
+        <button onclick="searchMonthlyResult()">عرض النتيجة</button>
+    </div>
+
+    <div id="loading">جاري البحث عن نتيجتك...</div>
+
+    <div id="result-container">
+        <div id="student-name" class="student-info"></div>
+        
+        <div id="subjects-list"></div>
+        
+        <div id="month-info" class="month-banner"></div>
+    </div>
+
+    <p id="no-result" class="no-result">
+        لا توجد نتيجة شهرية مسجلة بهذا الكود
+    </p>
+
+    <div class="footer">
+        Developed by <span>Ahmed Moussa</span> ♥
+    </div>
+</div>
+
+<script>
+    async function searchMonthlyResult() {
+        const code = document.getElementById('student-code').value.trim();
+        if (!code) {
+            alert('من فضلك أدخل الكود');
+            return;
+        }
+
+        const loading = document.getElementById('loading');
+        const resultContainer = document.getElementById('result-container');
+        const noResult = document.getElementById('no-result');
+        const subjectsList = document.getElementById('subjects-list');
+        const studentNameDiv = document.getElementById('student-name');
+        const monthInfo = document.getElementById('month-info');
+
+        resultContainer.style.display = 'none';
+        noResult.style.display = 'none';
+        subjectsList.innerHTML = '';
+        studentNameDiv.textContent = '';
+        monthInfo.textContent = '';
+        loading.style.display = 'block';
+
+        try {
+            const response = await fetch(`/api/monthly-result/${encodeURIComponent(code)}`);
+            const data = await response.json();
+
+            loading.style.display = 'none';
+
+            if (data.success && data.results.length > 0) {
+                resultContainer.style.display = 'block';
+
+                studentNameDiv.textContent = data.results[0].studentName;
+
+                data.results.forEach(r => {
+                    const card = document.createElement('div');
+                    card.className = 'subject-card';
+                    card.innerHTML = `
+                        <div class="subject-title">${r.subject}</div>
+                        <div class="grade">الدرجة: ${r.grade}</div>
+                    `;
+                    subjectsList.appendChild(card);
+                });
+
+                const months = [...new Set(data.results.map(r => r.month))];
+                monthInfo.textContent = months.length === 1 
+                    ? `الاختبار الشهري لشهر: ${months[0]}`
+                    : `نتائج متعددة الشهور: ${months.join(' – ')}`;
+            } else {
+                noResult.style.display = 'block';
+            }
+        } catch (err) {
+            loading.style.display = 'none';
+            alert('حدث خطأ أثناء جلب النتيجة، حاول مرة أخرى');
+            console.error(err);
+        }
+    }
+</script>
+
+</body>
+</html>

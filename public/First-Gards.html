@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="csrf-token" content="">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <title>نتيجة الصف الأول الثانوي تمريض - معهد رعاية الضبعية</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', 'Inter', sans-serif;
+      background: linear-gradient(135deg, #e8f0f6 0%, #f1f5f9 100%);
+      color: #334155;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* ========== الهيدر ========== */
+    .main-header {
+      background: linear-gradient(135deg, #1a4f6e 0%, #0d3b54 100%);
+      padding: 20px 40px;
+      border-radius: 28px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border-bottom: 3px solid #c4a35a;
+    }
+
+    .logo {
+      width: 65px;
+      height: 65px;
+      object-fit: cover;
+      border-radius: 50%;
+      background: white;
+      padding: 5px;
+      border: 2px solid #c4a35a;
+    }
+
+    .main-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 0%, #c4a35a 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .main-header h1::before {
+      content: '🏥';
+      font-size: 1.5rem;
+      color: #c4a35a;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .home-btn, .logout-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .home-btn:hover, .logout-btn:hover {
+      background: #c4a35a;
+      color: #1a4f6e;
+      transform: translateY(-2px);
+    }
+
+    /* ========== الحاوية الرئيسية ========== */
+    .admin-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(196, 163, 90, 0.2);
+    }
+
+    /* ========== نموذج البحث ========== */
+    .search-section {
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1a4f6e;
+      font-size: 0.85rem;
+    }
+
+    .input-group label i {
+      color: #c4a35a;
+      margin-left: 8px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.25s ease;
+      background: white;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #c4a35a;
+      box-shadow: 0 0 0 4px rgba(196, 163, 90, 0.15);
+    }
+
+    .input-group input.error {
+      border-color: #b91c1c;
+      background: #fee2e2;
+    }
+
+    .error-msg {
+      color: #b91c1c;
+      font-size: 0.7rem;
+      margin-top: 6px;
+      display: none;
+      font-weight: 500;
+    }
+
+    /* ========== زر البحث ========== */
+    .search-btn {
+      background: linear-gradient(135deg, #c4a35a 0%, #a07d3a 100%);
+      color: #1a4f6e;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(196, 163, 90, 0.3);
+    }
+
+    .search-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.02);
+    }
+
+    /* ========== بطاقة النتيجة ========== */
+    .result-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: 24px;
+      padding: 24px;
+      margin-top: 20px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .student-info {
+      text-align: center;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #c4a35a;
+      margin-bottom: 20px;
+    }
+
+    .student-info h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1a4f6e;
+      margin-bottom: 6px;
+    }
+
+    .student-info p {
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* ========== المواد ========== */
+    .subjects-list {
+      margin-bottom: 20px;
+    }
+
+    .subject-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+      transition: all 0.15s ease;
+    }
+
+    .subject-item:hover {
+      background: #e8f0f6;
+      padding-right: 8px;
+      border-radius: 12px;
+    }
+
+    .subject-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .subject-name i {
+      color: #c4a35a;
+      width: 24px;
+    }
+
+    .subject-grade {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .grade-high { color: #2d6a4f; }
+    .grade-medium { color: #d97706; }
+    .grade-low { color: #b91c1c; }
+
+    /* ========== المجموع والنسبة ========== */
+    .total-box {
+      background: linear-gradient(135deg, #1a4f6e 0%, #0d3b54 100%);
+      border-radius: 20px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .total-box span:first-child {
+      color: #c4a35a;
+      font-weight: 600;
+    }
+
+    .total-box span:last-child {
+      color: white;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .percentage-box {
+      text-align: center;
+      padding: 16px;
+      background: #f1f5f9;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .percentage-box .percentage-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #1a4f6e;
+    }
+
+    .percentage-box .percentage-label {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .rank-box {
+      text-align: center;
+      padding: 12px;
+      background: #e8f0f6;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .rank-box span {
+      font-weight: 700;
+      color: #c4a35a;
+    }
+
+    /* ========== زر المشاركة ========== */
+    .share-btn {
+      background: #25D366;
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .share-btn:hover {
+      background: #1da851;
+      transform: translateY(-2px);
+    }
+
+    /* ========== رسالة عدم وجود نتائج ========== */
+    .no-result {
+      text-align: center;
+      padding: 30px;
+      background: #fee2e2;
+      border-radius: 20px;
+      color: #b91c1c;
+      font-weight: 600;
+      display: none;
+      margin-top: 20px;
+    }
+
+    /* ========== الفوتر ========== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 30px;
+    }
+
+    .heart {
+      color: #b91c1c;
+      animation: heartbeat 1.5s ease infinite;
+      display: inline-block;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    /* ========== شريط التمرير ========== */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #c4a35a;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #1a4f6e;
+    }
+
+    /* ========== التجاوب ========== */
+    @media (max-width: 640px) {
+      body {
+        padding: 12px;
+      }
+
+      .admin-container {
+        padding: 20px;
+      }
+
+      .main-header {
+        padding: 15px 20px;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .main-header h1 {
+        font-size: 1rem;
+      }
+
+      .student-info h2 {
+        font-size: 1rem;
+      }
+
+      .subject-name {
+        font-size: 0.75rem;
+      }
+
+      .subject-grade {
+        font-size: 0.75rem;
+      }
+
+      .total-box span:last-child {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="main-header">
+  <img src="logo.png" alt="شعار المعهد" class="logo" onerror="this.style.display='none'">
+  <h1>نتيجة الصف الأول الثانوي - معهد رعاية الضبعية الفني للتمريض</h1>
+  <div class="header-buttons">
+    <button class="home-btn" onclick="window.location.href='Home.html'"><i class="fas fa-home"></i> الرئيسية</button>
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+  </div>
+</header>
+
+<div class="admin-container">
+  <!-- نموذج البحث -->
+  <div class="search-section">
+    <div class="input-group">
+      <label for="student-name"><i class="fas fa-user"></i> اسم الطالب</label>
+      <input id="student-name" type="text" placeholder="أدخل اسم الطالب بالكامل أو جزء منه" autocomplete="off">
+      <div class="error-msg" id="name-error"><i class="fas fa-exclamation-circle"></i> يرجى إدخال اسم الطالب</div>
+    </div>
+    <div class="input-group">
+      <label for="seat-number"><i class="fas fa-id-card"></i> رقم الجلوس</label>
+      <input id="seat-number" type="text" placeholder="أدخل رقم الجلوس" autocomplete="off">
+      <div class="error-msg" id="seat-error"><i class="fas fa-exclamation-circle"></i> يرجى إدخال رقم الجلوس</div>
+    </div>
+    <button class="search-btn" onclick="searchResult()"><i class="fas fa-search"></i> عرض النتيجة</button>
+  </div>
+
+  <!-- عرض النتيجة -->
+  <div id="result-container" style="display: none;">
+    <div class="result-card">
+      <div class="student-info" id="student-info"></div>
+      <div class="subjects-list" id="subjects-list"></div>
+      <div class="total-box" id="total-box"></div>
+      <div class="percentage-box" id="percentage-box"></div>
+      <div class="rank-box" id="rank-box"></div>
+      <button class="share-btn" id="share-btn" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> مشاركة النتيجة على واتساب</button>
+    </div>
+  </div>
+
+  <div id="no-result" class="no-result">
+    <i class="fas fa-search fa-2x" style="margin-bottom: 10px; display: block;"></i>
+    لا توجد نتيجة مطابقة. تأكد من الاسم ورقم الجلوس.
+  </div>
+</div>
+
+<div class="footer">
+  <p>Developed by Ahmed Moussa <span class="heart">❤</span></p>
+</div>
+
+<script>
+  // بيانات الطلاب
+  const results = [
+    {seat:"523",name:"احمد حسن جلال اسماعيل",subjects:{"اللغة العربية":"18.5 / 20","اللغة الإنجليزية":"9 / 20","العلوم التطبيقية":"35 / 40","التشريح":"13.5 / 20","مبادئ التمريض":"5.5 / 12","الحاسب":"11.5 / 12","الدين":"14 / 16"}},
+    {seat:"524",name:"احمد سعدي عباس عبد الراضي",subjects:{"اللغة العربية":"18 / 20","اللغة الإنجليزية":"18 / 20","العلوم التطبيقية":"29.5 / 40","التشريح":"12.5 / 20","مبادئ التمريض":"10 / 12","الحاسب":"9.5 / 12","الدين":"13 / 16"}},
+    {seat:"525",name:"اسامه محمد فكري حسين",subjects:{"اللغة العربية":"17.5 / 20","اللغة الإنجليزية":"17 / 20","العلوم التطبيقية":"31.5 / 40","التشريح":"11 / 20","مبادئ التمريض":"10.5 / 12","الحاسب":"9 / 12","الدين":"13 / 16"}},
+    {seat:"526",name:"حمزه ادريس محمد قاسم",subjects:{"اللغة العربية":"17.5 / 20","اللغة الإنجليزية":"10 / 20","العلوم التطبيقية":"26 / 40","التشريح":"12.5 / 20","مبادئ التمريض":"6.5 / 12","الحاسب":"9.5 / 12","الدين":"14 / 16"}},
+    {seat:"527",name:"زياد محمد خيري الراوي",subjects:{"اللغة العربية":"20 / 20","اللغة الإنجليزية":"11.5 / 20","العلوم التطبيقية":"27 / 40","التشريح":"14 / 20","مبادئ التمريض":"8.5 / 12","الحاسب":"9.5 / 12","الدين":"11 / 16"}},
+    {seat:"528",name:"عبد الرحمن حسن احمد حسن",subjects:{"اللغة العربية":"18.5 / 20","اللغة الإنجليزية":"10 / 20","العلوم التطبيقية":"24 / 40","التشريح":"13.5 / 20","مبادئ التمريض":"5 / 12","الحاسب":"10 / 12","الدين":"13 / 16"}},
+    {seat:"529",name:"عبد الله محمد جمعه حسين",subjects:{"اللغة العربية":"19.5 / 20","اللغة الإنجليزية":"10.5 / 20","العلوم التطبيقية":"35 / 40","التشريح":"17.5 / 20","مبادئ التمريض":"9 / 12","الحاسب":"10 / 12","الدين":"13 / 16"}},
+    {seat:"530",name:"محمد احمد محمد ابوالمجد",subjects:{"اللغة العربية":"19 / 20","اللغة الإنجليزية":"8.5 / 20","العلوم التطبيقية":"30.5 / 40","التشريح":"16 / 20","مبادئ التمريض":"7.5 / 12","الحاسب":"10.5 / 12","الدين":"14.5 / 16"}},
+    {seat:"531",name:"محمد احمد محمد احمد",subjects:{"اللغة العربية":"19.5 / 20","اللغة الإنجليزية":"17 / 20","العلوم التطبيقية":"35 / 40","التشريح":"18 / 20","مبادئ التمريض":"10.5 / 12","الحاسب":"11 / 12","الدين":"15 / 16"}},
+    {seat:"532",name:"ايه سعد الله عبد الله علي",subjects:{"اللغة العربية":"19.5 / 20","اللغة الإنجليزية":"17 / 20","العلوم التطبيقية":"35.5 / 40","التشريح":"16.5 / 20","مبادئ التمريض":"11.5 / 12","الحاسب":"11 / 12","الدين":"14.5 / 16"}},
+    {seat:"533",name:"داليا عبدالسلام بدري محمد",subjects:{"اللغة العربية":"19.5 / 20","اللغة الإنجليزية":"15 / 20","العلوم التطبيقية":"34.5 / 40","التشريح":"12.5 / 20","مبادئ التمريض":"11.5 / 12","الحاسب":"11 / 12","الدين":"14.5 / 16"}},
+    {seat:"534",name:"رضوى محمد فتحي عبد الحميد",subjects:{"اللغة العربية":"18.5 / 20","اللغة الإنجليزية":"9.5 / 20","العلوم التطبيقية":"27 / 40","التشريح":"12.5 / 20","مبادئ التمريض":"8 / 12","الحاسب":"11 / 12","الدين":"14.5 / 16"}},
+    {seat:"535",name:"زمزم مصطفى فؤاد محمود",subjects:{"اللغة العربية":"19.5 / 20","اللغة الإنجليزية":"13.5 / 20","العلوم التطبيقية":"32 / 40","التشريح":"17 / 20","مبادئ التمريض":"9.5 / 12","الحاسب":"11.5 / 12","الدين":"14.5 / 16"}},
+    {seat:"536",name:"زينب محمد عبد الدايم محمد",subjects:{"اللغة العربية":"19.5 / 20","اللغة الإنجليزية":"17 / 20","العلوم التطبيقية":"32.5 / 40","التشريح":"16 / 20","مبادئ التمريض":"11 / 12","الحاسب":"11.5 / 12","الدين":"11.5 / 16"}},
+    {seat:"537",name:"سارة عامر عبد الراضي صديق",subjects:{"اللغة العربية":"18 / 20","اللغة الإنجليزية":"8 / 20","العلوم التطبيقية":"31 / 40","التشريح":"15.5 / 20","مبادئ التمريض":"7 / 12","الحاسب":"10.5 / 12","الدين":"11.5 / 16"}},
+    {seat:"538",name:"شاهندا صابر سيد سعدي احمد",subjects:{"اللغة العربية":"19.5 / 20","اللغة الإنجليزية":"16.5 / 20","العلوم التطبيقية":"37.5 / 40","التشريح":"13 / 20","مبادئ التمريض":"8 / 12","الحاسب":"11 / 12","الدين":"14 / 16"}},
+    {seat:"539",name:"فاطمه خيري عبدالله حسن",subjects:{"اللغة العربية":"20 / 20","اللغة الإنجليزية":"17 / 20","العلوم التطبيقية":"36 / 40","التشريح":"17 / 20","مبادئ التمريض":"11.5 / 12","الحاسب":"11 / 12","الدين":"15 / 16"}},
+    {seat:"540",name:"ملك تيسير محمد الزاهر",subjects:{"اللغة العربية":"19.5 / 20","اللغة الإنجليزية":"16 / 20","العلوم تطبيقية":"32.5 / 40","التشريح":"15.5 / 20","مبادئ التمريض":"9.5 / 12","الحاسب":"11 / 12","الدين":"12 / 16"}},
+    {seat:"541",name:"ملك محمد احمد محمد",subjects:{"اللغة العربية":"19 / 20","اللغة الإنجليزية":"15.5 / 20","العلوم التطبيقية":"34 / 40","التشريح":"17 / 20","مبادئ التمريض":"10.5 / 12","الحاسب":"10.5 / 12","الدين":"16 / 16"}},
+    {seat:"542",name:"منه احمد عبد الفتاح احمد",subjects:{"اللغة العربية":"20 / 20","اللغة الإنجليزية":"18 / 20","العلوم التطبيقية":"34.5 / 40","التشريح":"16 / 20","مبادئ التمريض":"12 / 12","الحاسب":"10.5 / 12","الدين":"13 / 16"}},
+    {seat:"543",name:"نوران احمد رشدي قناوي",subjects:{"اللغة العربية":"20 / 20","اللغة الإنجليزية":"8 / 20","العلوم التطبيقية":"32 / 40","التشريح":"13.5 / 20","مبادئ التمريض":"6.5 / 12","الحاسب":"11 / 12","الدين":"14 / 16"}},
+    {seat:"544",name:"هاجر عبد النعيم رمضان بشاري",subjects:{"اللغة العربية":"20 / 20","اللغة الإنجليزية":"13.5 / 20","العلوم التطبيقية":"34.5 / 40","التشريح":"15.5 / 20","مبادئ التمريض":"6 / 12","الحاسب":"11.5 / 12","الدين":"15 / 16"}}
+  ];
+
+  const icons = {
+    "اللغة العربية": "fa-book",
+    "اللغة الإنجليزية": "fa-language",
+    "العلوم التطبيقية": "fa-flask",
+    "التشريح": "fa-brain",
+    "مبادئ التمريض": "fa-syringe",
+    "الحاسب": "fa-laptop-code",
+    "الدين": "fa-mosque"
+  };
+
+  // تطبيع النص للبحث المرن
+  function normalizeArabic(str) {
+    if (!str) return '';
+    return str
+      .replace(/[أإآا]/g, 'ا')
+      .replace(/ة/g, 'ه')
+      .replace(/ى/g, 'ي')
+      .replace(/\s+/g, ' ')
+      .replace(/(عبد)\s+(ال|اله)/g, '$1$2')
+      .replace(/(عبد)\s+(الله)/g, '$1$2')
+      .trim()
+      .toLowerCase();
+  }
+
+  function getGradeClass(percentage) {
+    if (percentage >= 85) return "grade-high";
+    if (percentage >= 60) return "grade-medium";
+    return "grade-low";
+  }
+
+  function calculatePercentage(grade, max) {
+    return (grade / max) * 100;
+  }
+
+  function searchResult() {
+    const nameInput = document.getElementById("student-name");
+    const seatInput = document.getElementById("seat-number");
+    const nameError = document.getElementById("name-error");
+    const seatError = document.getElementById("seat-error");
+    
+    nameError.style.display = "none";
+    seatError.style.display = "none";
+    nameInput.classList.remove("error");
+    seatInput.classList.remove("error");
+    
+    const rawName = nameInput.value.trim();
+    const rawSeat = seatInput.value.trim();
+    
+    let hasError = false;
+    
+    if (!rawName) {
+      nameError.style.display = "block";
+      nameInput.classList.add("error");
+      hasError = true;
+    }
+    
+    if (!rawSeat) {
+      seatError.style.display = "block";
+      seatInput.classList.add("error");
+      hasError = true;
+    }
+    
+    if (hasError) {
+      document.getElementById("result-container").style.display = "none";
+      document.getElementById("no-result").style.display = "none";
+      return;
+    }
+    
+    const normalizedInputName = normalizeArabic(rawName);
+    const normalizedSeat = rawSeat;
+    
+    const student = results.find(s => {
+      const normalizedStudentName = normalizeArabic(s.name);
+      const seatMatch = (s.seat === normalizedSeat);
+      const nameMatch = normalizedStudentName.includes(normalizedInputName);
+      return seatMatch && nameMatch;
+    });
+
+    if (!student) {
+      document.getElementById("no-result").style.display = "block";
+      document.getElementById("result-container").style.display = "none";
+      return;
+    }
+
+    document.getElementById("no-result").style.display = "none";
+    
+    // عرض معلومات الطالب
+    document.getElementById("student-info").innerHTML = `
+      <h2>${student.name}</h2>
+      <p><i class="fas fa-id-card"></i> رقم الجلوس: ${student.seat}</p>
+    `;
+
+    // عرض المواد والدرجات
+    const subjectsList = document.getElementById("subjects-list");
+    subjectsList.innerHTML = "";
+    
+    let total = 0, maxTotal = 0;
+    
+    for (const sub in student.subjects) {
+      const gradeStr = student.subjects[sub];
+      const [grade, max] = gradeStr.split('/').map(x => parseFloat(x));
+      const percentage = calculatePercentage(grade, max);
+      const gradeClass = getGradeClass(percentage);
+      
+      subjectsList.innerHTML += `
+        <div class="subject-item">
+          <div class="subject-name">
+            <i class="fas ${icons[sub] || 'fa-book'}"></i>
+            <span>${sub}</span>
+          </div>
+          <div class="subject-grade ${gradeClass}">${grade} / ${max}</div>
+        </div>
+      `;
+      
+      total += grade;
+      maxTotal += max;
+    }
+    
+    const percentage = (total / maxTotal * 100).toFixed(1);
+    let percentageClass = "";
+    if (percentage >= 85) percentageClass = "grade-high";
+    else if (percentage >= 60) percentageClass = "grade-medium";
+    else percentageClass = "grade-low";
+    
+    document.getElementById("total-box").innerHTML = `
+      <span><i class="fas fa-calculator"></i> المجموع الكلي</span>
+      <span>${total} / ${maxTotal}</span>
+    `;
+    
+    document.getElementById("percentage-box").innerHTML = `
+      <div class="percentage-value ${percentageClass}">${percentage}%</div>
+      <div class="percentage-label">النسبة المئوية</div>
+    `;
+    
+    // حساب الترتيب
+    const sorted = results.map(s => {
+      let sum = 0, maxSum = 0;
+      for (const sub in s.subjects) {
+        const [a, b] = s.subjects[sub].split('/').map(x => parseFloat(x));
+        sum += a;
+        maxSum += b;
+      }
+      return { name: s.name, percent: (sum / maxSum * 100).toFixed(1) };
+    }).sort((a, b) => b.percent - a.percent);
+    
+    const rankIndex = sorted.findIndex(s => s.name === student.name) + 1;
+    
+    document.getElementById("rank-box").innerHTML = `
+      <i class="fas fa-trophy"></i> ترتيب الطالب على الدفعة: <span>${rankIndex} / ${results.length}</span>
+    `;
+    
+    document.getElementById("result-container").style.display = "block";
+  }
+
+  function shareWhatsApp() {
+    const nameInput = document.getElementById("student-name");
+    const seatInput = document.getElementById("seat-number");
+    const rawName = nameInput.value.trim();
+    const rawSeat = seatInput.value.trim();
+    
+    if (!rawName || !rawSeat) return;
+    
+    const normalizedInputName = normalizeArabic(rawName);
+    
+    const student = results.find(s => {
+      const normalizedStudentName = normalizeArabic(s.name);
+      const seatMatch = (s.seat === rawSeat);
+      const nameMatch = normalizedStudentName.includes(normalizedInputName);
+      return seatMatch && nameMatch;
+    });
+    
+    if (!student) return;
+    
+    let msg = `📊 *نتيجة الطالب ${student.name}*%0A📋 رقم الجلوس: ${student.seat}%0A%0A`;
+    let total = 0, maxTotal = 0;
+    
+    for (const sub in student.subjects) {
+      const gradeStr = student.subjects[sub];
+      const [grade, max] = gradeStr.split('/').map(x => parseFloat(x));
+      msg += `📌 ${sub}: ${grade} / ${max}%0A`;
+      total += grade;
+      maxTotal += max;
+    }
+    
+    const percentage = (total / maxTotal * 100).toFixed(1);
+    msg += `%0A📊 *المجموع: ${total} / ${maxTotal}*%0A📈 *النسبة: ${percentage}%*`;
+    
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+  }
+
+  // تسجيل الخروج
+  function logout() {
+    if (confirm('هل تريد تسجيل الخروج؟')) {
+      sessionStorage.clear();
+      window.location.href = 'login.html';
+    }
+  }
+
+  // البحث عند الضغط على Enter
+  document.getElementById("student-name").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") searchResult();
+  });
+  document.getElementById("seat-number").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") searchResult();
+  });
+
+  // إخفاء رسائل الخطأ عند الكتابة
+  document.getElementById("student-name").addEventListener("input", function() {
+    document.getElementById("name-error").style.display = "none";
+    this.classList.remove("error");
+  });
+  
+  document.getElementById("seat-number").addEventListener("input", function() {
+    document.getElementById("seat-error").style.display = "none";
+    this.classList.remove("error");
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>طلاب الصف 
+  <style>
+    table { width: 90%; margin: 2em auto; border-collapse: collapse; }
+    th, td { border: 1px solid #aaa; padding: 0.6em; text-align: center; }
+    th { background: #f2f2f2; }
+    caption { font-size: 1.2em; margin-bottom: 1em;}
+    .edit-btn { background:#0077bb; color:#fff; border:none; padding:5px 12px; cursor:pointer; border-radius:4px;}
+  </style>
+</head>
+<body>
+  <h2 style="text-align: center;">طلاب الصف الثالث</h2>
+  <table>
+    <caption>قائمة الطلاب</caption>
+    <thead>
+      <tr>
+        <th>الاسم الكامل</th>
+        <th>اسم المستخدم</th>
+        <th>رقم الجلوس</th>
+        <th>الهاتف</th>
+        <th>ولي الأمر</th>
+        <th>رقم البطاقة</th>
+        <th>تعديل</th>
+      </tr>
+    </thead>
+    <tbody id="students-body"></tbody>
+  </table>
+  <!-- نافذة التعديل -->
+  <div id="edit-modal" style="display:none; position:fixed;top:0;left:0;right:0;bottom:0; background:#0005;align-items:center;justify-content:center">
+    <form id="edit-form" style="background:#fff;padding:30px;max-width:450px;margin:auto;border-radius:10px;">
+      <h3>تعديل بيانات الطالب</h3>
+      <input type="hidden" id="edit-id">
+      <label>الاسم الكامل: <input id="edit-fullName" required></label><br><br>
+      <label>الهاتف: <input id="edit-phone"></label><br><br>
+      <label>اسم ولي الأمر: <input id="edit-parentName"></label><br><br>
+      <label>رقم بطاقة  الأمر: <input id="edit-parentId"></label><br><br>
+      <button type="submit">حفظ التعديل</button>
+      <button type="button" onclick="closeEdit()">إلغاء</button>
+    </form>
+  </div>
+  <script>
+    async function fetchStudents() {
+      const res = await fetch('/api/students/by-year/third');
+      const students = await res.json();
+      const tbody = document.getElementById('students-body');
+      tbody.innerHTML = '';
+      students.forEach(st => {
+        tbody.innerHTML += `<tr>
+          <td>${st.fullName}</td>
+          <td>${st.username}</td>
+          <td>${st.id}</td>
+          <td>${st.profile?.phone||''}</td>
+          <td>${st.profile?.parentName||''}</td>
+          <td>${st.profile?.parentId||''}</td>
+          <td><button class="edit-btn" onclick='startEdit(${JSON.stringify(st)})'>تعديل</button></td>
+        </tr>`;
+      });
+    }
+    fetchStudents();
+
+    // نافذة التعديل
+    function startEdit(st) {
+      document.getElementById('edit-id').value = st.id;
+      document.getElementById('edit-fullName').value = st.fullName;
+      document.getElementById('edit-phone').value = st.profile?.phone||'';
+      document.getElementById('edit-parentName').value = st.profile?.parentName||'';
+      document.getElementById('edit-parentId').value = st.profile?.parentId||'';
+      document.getElementById('edit-modal').style.display = 'flex';
+    }
+    function closeEdit() {
+      document.getElementById('edit-modal').style.display = 'none';
+    }
+
+    document.getElementById('edit-form').onsubmit = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-id').value;
+      const body = {
+        fullName: document.getElementById('edit-fullName').value,
+        profile: {
+          phone: document.getElementById('edit-phone').value,
+          parentName: document.getElementById('edit-parentName').value,
+          parentId: document.getElementById('edit-parentId').value
+        }
+      };
+      await fetch('/api/students/' + id, {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(body)
+      });
+      closeEdit();
+      fetchStudents();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta name="google-adsense-account" content="ca-pub-7676282531413677">
+    <title>نتايج الطلاب - معهد رعاية الضبعية الفني للتمريض</title>
+    <link rel="stylesheet" href="Home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7676282531413677" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="/logo.png">
+</head>
+<body>
+    <header class="main-header">
+        <img src="logo.png" alt="شعار معهد رعاية الضبعية" class="logo">
+        <h1>نتايج الطلاب - معهد رعاية الضبعية الفني للتمريض</h1>
+        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </header>
+
+    <div class="main-container">
+        <div class="result-form-container">
+            <div class="welcome-message" id="welcome-message"></div>
+            <h2>ابحث عن نتيجتك</h2>
+            <form id="search-form">
+                <div class="input-group">
+                    <label for="search-name">اسم الطالب</label>
+                    <input type="text" id="search-name" name="student-name" placeholder="أدخل اسم الطالب" required>
+                </div>
+                <div class="input-group">
+                    <label for="search-id">رقم الجلوس</label>
+                    <input type="text" id="search-id" name="student-id" placeholder="أدخل رقم الجلوس" required>
+                </div>
+                <button type="submit" class="submit-btn">عرض النتيجة</button>
+            </form>
+
+            <!-- قسم لوحة التحكم التفاعلية -->
+            <section class="student-dashboard" id="dashboard">
+                <h2>لوحة تحكمك</h2>
+                <div class="dashboard-content">
+                    <div class="stats">
+                        <p id="student-percentage">نسبة نجاحك: --%</p>
+                        <p id="class-average">متوسط الفصل: --%</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="gradesChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+          
+            <!-- قسم إحصائيات الحضور والغياب -->
+            <section class="attendance-stats-section" id="attendanceStatsSection" style="display: none; background: #fff; border-radius: 12px; padding: 20px; margin-top: 20px; border: 1px solid #d4af37;">
+                <h2 style="color: #1a2526; font-size: 1.2rem; margin-bottom: 15px; text-align: center;">📋 إحصائيات الحضور والغياب</h2>
+                <div class="attendance-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div class="stat-card present" style="display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; background: #f8f9fa; border-right: 4px solid #28a745;">
+                        <div class="stat-icon" style="font-size: 2rem; color: #28a745;"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-info" style="flex: 1;">
+                            <div class="stat-number" id="presentCount" style="font-size: 1.8rem; font-weight: bold; color: #1a2526;">0</div>
+                            <div class="stat-label" style="font-size: 0.85rem; color: #666;">أيام الحضور</div>
+                        </div>
+                    </div>
+                    <div class="stat-card absent" style="display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; background: #f8f9fa; border-right: 4px solid #dc3545;">
+                        <div class="stat-icon" style="font-size: 2rem; color: #dc3545;"><i class="fas fa-times-circle"></i></div>
+                        <div class="stat-info" style="flex: 1;">
+                            <div class="stat-number" id="absentCount" style="font-size: 1.8rem; font-weight: bold; color: #1a2526;">0</div>
+                            <div class="stat-label" style="font-size: 0.85rem; color: #666;">أيام الغياب</div>
+                        </div>
+                    </div>
+                    <div class="stat-card late" style="display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; background: #f8f9fa; border-right: 4px solid #ffc107;">
+                        <div class="stat-icon" style="font-size: 2rem; color: #ffc107;"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info" style="flex: 1;">
+                            <div class="stat-number" id="lateCount" style="font-size: 1.8rem; font-weight: bold; color: #1a2526;">0</div>
+                            <div class="stat-label" style="font-size: 0.85rem; color: #666;">أيام التأخير</div>
+                        </div>
+                    </div>
+                    <div class="stat-card percentage" style="display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; background: #f8f9fa; border-right: 4px solid #d4af37;">
+                        <div class="stat-icon" style="font-size: 2rem; color: #d4af37;"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-info" style="flex: 1;">
+                            <div class="stat-number" id="attendancePercentage" style="font-size: 1.8rem; font-weight: bold; color: #1a2526;">0%</div>
+                            <div class="stat-label" style="font-size: 0.85rem; color: #666;">نسبة الحضور</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="attendance-dates" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; padding-top: 15px; border-top: 1px solid #eee;">
+                    <div class="date-card" style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px;">
+                        <i class="fas fa-calendar-check" style="color: #28a745;"></i>
+                        <span>📅 آخر يوم حضور:</span>
+                        <strong id="lastPresentDate">لم يتم تسجيل بعد</strong>
+                    </div>
+                    <div class="date-card" style="display: flex; align-items: center; gap: 8px; padding: 10px 15px; background: #f8f9fa; border-radius: 8px;">
+                        <i class="fas fa-calendar-times" style="color: #dc3545;"></i>
+                        <span>📅 آخر يوم غياب:</span>
+                        <strong id="lastAbsentDate">لم يتم تسجيل بعد</strong>
+                    </div>
+                </div>
+                <div id="noAttendanceMessage" class="no-attendance-message" style="display: none; text-align: center; padding: 20px; background: #fff3cd; border-radius: 10px; color: #856404; margin-top: 15px;">
+                    <i class="fas fa-info-circle" style="font-size: 1.5rem; margin-bottom: 10px; display: block;"></i>
+                    📌 لم يتم تسجيل أي حضور أو غياب لك حتى الآن. سيبدأ العد من أول مرة يتم تسجيل حضورك أو غيابك.
+                </div>
+            </section>
+
+            <section class="result-table">
+                <h3>النتيجة</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>البيانات</th>
+                                <th>القيم</th>
+                                <th>المجموع</th>
+                                <th>النسبة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="result-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="violations-section">
+                <h3>الإنذارات والمخالفات</h3>
+                <div class="table-wrapper">
+                    <table class="violations-table">
+                        <thead>
+                            <tr>
+                                <th>النوع</th>
+                                <th>السبب</th>
+                                <th>العقوبة</th>
+                                <th>استدعاء ولي الأمر</th>
+                                <th>تاريخ الإضافة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="violations-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="notifications-section">
+                <h2>الإشعارات</h2>
+                <div id="notifications-list" class="notifications-list">
+                    <div id="notifications-table" class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>نص الإشعار</th>
+                                    <th>تاريخ الإضافة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="notifications-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="nav-bar" id="nav-bar"></nav>
+
+    <footer>
+        <p>Developed by Ahmed Moussa <span class="heart">❤</span></p>
+    </footer>
+
+    <script src="crypto-js.js"></script>
+    <script src="auth.js"></script>
+    <script src="Home.js"></script>
+</body>
+</html>

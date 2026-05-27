@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الحضور والغياب - معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <style>
+        .attendance-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .attendance-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .attendance-table th, .attendance-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .attendance-table th {
+            background: #1a2526;
+            color: #d4af37;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-present {
+            background: #28a745;
+            color: white;
+        }
+        .status-absent {
+            background: #dc3545;
+            color: white;
+        }
+        .status-late {
+            background: #ffc107;
+            color: #1a2526;
+        }
+        .btn-attendance {
+            background: #d4af37;
+            color: #1a2526;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .btn-attendance:hover {
+            background: #1a2526;
+            color: #d4af37;
+        }
+        .date-picker {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .date-picker input {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #1a2526, #2f3b3c);
+            color: #d4af37;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            min-width: 120px;
+        }
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 14px;
+        }
+        .bulk-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .bulk-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .bulk-present {
+            background: #28a745;
+            color: white;
+        }
+        .bulk-absent {
+            background: #dc3545;
+            color: white;
+        }
+        .bulk-late {
+            background: #ffc107;
+            color: #1a2526;
+        }
+        .search-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 20px;
+            border: 2px solid #d4af37;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .search-input:focus {
+            border-color: #1a2526;
+            box-shadow: 0 0 10px rgba(212,175,55,0.3);
+        }
+        .search-info {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #dc3545;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <img src="logo.png" alt="شعار المعهد" class="logo">
+        <h1>تسجيل الحضور والغياب</h1>
+        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </header>
+
+    <div class="admin-container">
+        <div class="summary-card">
+            <h3>📊 ملخص الحضور لليوم</h3>
+            <div class="summary-stats" id="summaryStats">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">إجمالي الطلاب</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="presentCount">0</div>
+                    <div class="stat-label">✅ حاضرون</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="absentCount">0</div>
+                    <div class="stat-label">❌ غائبون</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="lateCount">0</div>
+                    <div class="stat-label">⏰ متأخرون</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="presentPercentage">0%</div>
+                    <div class="stat-label">نسبة الحضور</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bulk-buttons">
+            <button class="bulk-btn bulk-present" onclick="bulkUpdate('present')">✅ تحديد الكل حاضر</button>
+            <button class="bulk-btn bulk-absent" onclick="bulkUpdate('absent')">❌ تحديد الكل غائب</button>
+            <button class="bulk-btn bulk-late" onclick="bulkUpdate('late')">⏰ تحديد الكل متأخر</button>
+        </div>
+
+        <div class="date-picker">
+            <label for="attendance-date">اختر التاريخ: </label>
+            <input type="date" id="attendance-date" onchange="loadAttendance()">
+        </div>
+
+        <!-- قسم البحث عن الطالب -->
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 ابحث باسم الطالب أو رقم الجلوس..." oninput="filterStudents()">
+            <div class="search-info" id="searchInfo"></div>
+        </div>
+
+        <div class="attendance-table">
+            <div class="table-wrapper">
+                <table id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>رقم الجلوس</th>
+                            <th>اسم الطالب</th>
+                            <th>الحالة</th>
+                            <th>ملاحظة</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendance-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <button class="submit-btn" onclick="saveAttendance()">💾 حفظ جميع التغييرات</button>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        let students = [];
+        let filteredStudents = [];
+        let attendanceRecords = {};
+        let currentDate = new Date().toISOString().split('T')[0];
+
+        // تحميل الطلاب
+        async function loadStudents() {
+            try {
+                const response = await fetch('/api/students');
+                students = await response.json();
+                // عرض الطلاب الذين لديهم درجات فقط (مسجلين في النظام)
+                students = students.filter(s => s.subjects && s.subjects.length > 0);
+                filteredStudents = [...students];
+                document.getElementById('attendance-date').value = currentDate;
+                await loadAttendance();
+                updateSearchInfo();
+            } catch (error) {
+                console.error('Error loading students:', error);
+                showToast('خطأ في تحميل بيانات الطلاب', 'error');
+            }
+        }
+
+        // تحميل بيانات الحضور للتاريخ المحدد
+        async function loadAttendance() {
+            currentDate = document.getElementById('attendance-date').value;
+            try {
+                const response = await fetch(`/api/attendance/${currentDate}`);
+                const records = await response.json();
+                
+                // تحويل السجلات إلى كائن للبحث السريع
+                attendanceRecords = {};
+                records.forEach(record => {
+                    attendanceRecords[record.studentCode] = record;
+                });
+                
+                renderAttendanceTable();
+                updateSummary();
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+            }
+        }
+
+        // البحث عن الطالب
+        function filterStudents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredStudents = [...students];
+            } else {
+                filteredStudents = students.filter(student => 
+                    student.fullName.toLowerCase().includes(searchTerm) ||
+                    student.studentCode.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            renderAttendanceTable();
+            updateSearchInfo();
+        }
+
+        // تحديث معلومات البحث
+        function updateSearchInfo() {
+            const searchInfo = document.getElementById('searchInfo');
+            if (filteredStudents.length === students.length) {
+                searchInfo.innerHTML = `📋 عرض كل الطلاب (${students.length} طالب)`;
+            } else {
+                searchInfo.innerHTML = `🔍 تم العثور على ${filteredStudents.length} طالب من أصل ${students.length}`;
+            }
+        }
+
+        // عرض جدول الحضور (مع الطلاب المصفاة فقط)
+        function renderAttendanceTable() {
+            const tbody = document.getElementById('attendance-table-body');
+            tbody.innerHTML = '';
+            
+            if (filteredStudents.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="no-results">
+                            <i class="fas fa-search"></i> لا توجد نتائج مطابقة للبحث
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredStudents.forEach((student, index) => {
+                const record = attendanceRecords[student.studentCode];
+                const status = record ? record.status : 'present';
+                const note = record ? (record.note || '') : '';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.studentCode}</td>
+                    <td>${student.fullName}</td>
+                    <td>
+                        <select class="status-select" data-code="${student.studentCode}" data-name="${student.fullName}">
+                            <option value="present" ${status === 'present' ? 'selected' : ''}>✅ حاضر</option>
+                            <option value="absent" ${status === 'absent' ? 'selected' : ''}>❌ غائب</option>
+                            <option value="late" ${status === 'late' ? 'selected' : ''}>⏰ متأخر</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="note-input" data-code="${student.studentCode}" value="${escapeHtml(note)}" placeholder="ملاحظة (اختياري)" style="width: 100%; padding: 5px;">
+                    </td>
+                    <td>
+                        <button class="btn-attendance" onclick="updateSingle('${student.studentCode}')">
+                            <i class="fas fa-save"></i> حفظ
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // دالة لتشفير النص
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // تحديث حالة طالب واحد
+        window.updateSingle = async function(studentCode) {
+            const select = document.querySelector(`.status-select[data-code="${studentCode}"]`);
+            const noteInput = document.querySelector(`.note-input[data-code="${studentCode}"]`);
+            const student = students.find(s => s.studentCode === studentCode);
+            
+            const data = {
+                studentCode: studentCode,
+                studentName: student.fullName,
+                date: currentDate,
+                status: select.value,
+                note: noteInput ? noteInput.value : '',
+                recordedBy: 'admin'
+            };
+            
+            try {
+                const response = await fetch('/api/attendance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    showToast('تم حفظ الحضور بنجاح', 'success');
+                    await loadAttendance();
+                }
+            } catch (error) {
+                console.error('Error saving attendance:', error);
+                showToast('خطأ في حفظ الحضور', 'error');
+            }
+        };
+
+        // تحديث جميع الطلاب بحالة واحدة
+        window.bulkUpdate = async function(status) {
+            for (const student of filteredStudents) {
+                const select = document.querySelector(`.status-select[data-code="${student.studentCode}"]`);
+                if (select) select.value = status;
+            }
+            showToast(`تم تغيير جميع الطلاب المعروضين إلى ${status === 'present' ? 'حاضر' : status === 'absent' ? 'غائب' : 'متأخر'}`, 'info');
+        };
+
+        // حفظ جميع التغييرات
+        window.saveAttendance = async function() {
+            const updates = [];
+            for (const student of filteredStudents) {
+                const select = document.querySelector(`.status-select[data-code="${student.studentCode}"]`);
+                const noteInput = document.querySelector(`.note-input[data-code="${student.studentCode}"]`);
+                
+                if (select) {
+                    updates.push({
+                        code: student.studentCode,
+                        name: student.fullName,
+                        status: select.value,
+                        note: noteInput ? noteInput.value : ''
+                    });
+                }
+            }
+            
+            try {
+                const response = await fetch('/api/attendance/bulk', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: currentDate,
+                        students: updates,
+                        recordedBy: 'admin'
+                    })
+                });
+                
+                if (response.ok) {
+                    showToast('تم حفظ جميع تغييرات الحضور بنجاح', 'success');
+                    await loadAttendance();
+                }
+            } catch (error) {
+                console.error('Error saving bulk attendance:', error);
+                showToast('خطأ في حفظ التغييرات', 'error');
+            }
+        };
+
+        // تحديث الإحصائيات
+        function updateSummary() {
+            let present = 0, absent = 0, late = 0;
+            
+            for (const student of students) {
+                const record = attendanceRecords[student.studentCode];
+                if (record) {
+                    if (record.status === 'present') present++;
+                    else if (record.status === 'absent') absent++;
+                    else if (record.status === 'late') late++;
+                } else {
+                    present++; // الافتراضي حاضر
+                }
+            }
+            
+            const total = students.length;
+            const percentage = total > 0 ? (present / total) * 100 : 0;
+            
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('presentCount').textContent = present;
+            document.getElementById('absentCount').textContent = absent;
+            document.getElementById('lateCount').textContent = late;
+            document.getElementById('presentPercentage').textContent = percentage.toFixed(1) + '%';
+        }
+
+        function showToast(message, type) {
+            const bg = type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#ffc107';
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: 'top',
+                position: 'right',
+                backgroundColor: bg,
+                stopOnFocus: true
+            }).showToast();
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = 'login.html';
+        };
+
+        // تحميل البيانات عند فتح الصفحة
+        loadStudents();
+    </script>
+</body>
+</html>

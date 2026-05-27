@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>إصدار شهادة تقدير - SchoolX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        :root{--gold:#d4af37;--dark:#0f1419;--gray:#1a2526;--green:#006633;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:var(--dark);font-family:'Cairo',sans-serif;color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+        
+        .main{flex:1;padding:20px 15px;padding-bottom:100px;overflow-y:auto;}
+        .card{
+            background:var(--gray);border-radius:22px;overflow:hidden;
+            box-shadow:0 15px 50px rgba(212,175,55,0.4);border:4px solid var(--gold);
+            max-width:520px;margin:0 auto;padding:30px 25px;
+        }
+        header{background:linear-gradient(135deg,#1a2526,#2c3e50);padding:20px;text-align:center;border-bottom:5px double var(--gold);}
+        header h1{color:var(--gold);font-size:2rem;font-weight:900;}
+        header p{color:#ccc;font-size:1rem;margin-top:8px;}
+
+        label{display:block;margin:20px 0 10px;color:var(--gold);font-weight:700;font-size:1.3rem;text-align:center;}
+        input{
+            width:100%;padding:16px 20px;border-radius:14px;border:3px solid var(--gold);
+            background:#fff;color:#000;font-size:1.3rem;text-align:center;
+            font-family:'Cairo';box-shadow:0 5px 15px rgba(0,0,0,0.3);
+        }
+        .btn{
+            width:100%;padding:18px;margin:25px 0 15px;background:var(--gold);color:#000;
+            font-size:1.6rem;font-weight:900;border:none;border-radius:14px;cursor:pointer;
+            box-shadow:0 10px 30px rgba(212,175,55,0.6);transition:0.4s;
+        }
+        .btn:hover{background:#ffc107;transform:translateY(-4px);}
+        #preview{max-width:100%;margin:30px 0;border:6px double var(--gold);border-radius:18px;display:none;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+        #downloadBtn{display:none;background:#25D366;color:#fff;padding:18px;font-size:1.5rem;border-radius:14px;}
+        #downloadBtn:hover{background:#128C7E;}
+
+        /* الناف بار الفخم المثالي */
+        .nav{
+            position:fixed;bottom:0;left:0;right:0;height:78px;
+            background:linear-gradient(180deg,#1a2526,#2a3a3b);
+            display:flex;justify-content:space-around;align-items:center;
+            border-top:4.5px solid var(--gold);border-top-left-radius:25px;border-top-right-radius:25px;
+            box-shadow:0 -12px 40px rgba(0,0,0,0.9);z-index:9999;padding:0 15px;
+        }
+        .nav a{
+            color:var(--gold);font-size:1.7rem;width:56px;height:56px;display:flex;
+            align-items:center;justify-content:center;background:rgba(255,255,255,0.1);
+            border-radius:50%;transition:0.4s;position:relative;
+        }
+        .nav a:hover{background:var(--gold);color:#000;transform:scale(1.1);}
+        .nav a.active{
+            background:var(--gold);color:#000;transform:scale(1.25);
+            box-shadow:0 10px 30px rgba(212,175,55,0.8);
+        }
+        .nav a.active::after{
+            content:'';position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);
+            width:8px;height:8px;background:var(--gold);border-radius:50%;box-shadow:0 0 25px var(--gold);
+        }
+
+        @media (max-width:480px){
+            .card{padding:20px;}
+            header h1{font-size:1.7rem;}
+            input, .btn{font-size:1.2rem;padding:14px;}
+            .nav a{font-size:1.5rem;width:50px;height:50px;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="main">
+    <div class="card">
+        <header>
+            <h1>إصدار شهادة تقدير</h1>
+            <p>SchoolX - معهد رعاية الضبعية للتمريض</p>
+        </header>
+
+        <label>اسم الطالب الرباعي</label>
+        <input type="text" id="studentName" placeholder="أدخل الاسم هنا" value="أحمد محمد علي السيد">
+
+        <button class="btn" onclick="generateCertificate()">معاينة الشهادة</button>
+
+        <img id="preview" alt="معاينة الشهادة">
+
+        <button id="downloadBtn" class="btn">تحميل الشهادة PDF</button>
+    </div>
+</div>
+
+<!-- الناف بار الفخم -->
+<nav class="nav">
+    <a href="index.html"><i class="fa-solid fa-house"></i></a>
+    <a href="Home.html"><i class="fa-solid fa-chart-line"></i></a>
+    <a href="profile.html"><i class="fa-solid fa-user"></i></a>
+    <a href="exams.html"><i class="fa-solid fa-book-open"></i></a>
+   
+</nav>
+
+<script>
+let finalImageData = null;
+
+function generateCertificate() {
+    const studentName = document.getElementById("studentName").value.trim() || "الطالب المتميز";
+    const preview = document.getElementById("preview");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = "pic.png";
+
+    img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        // اسم الطالب في المكان المثالي (رفعته تاني شوية حسب طلبك الأخير)
+        ctx.font = "bold 82px Cairo";
+        ctx.fillStyle = "#c00";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(studentName, canvas.width / 2, canvas.height * 0.495); // أعلى شوية تاني
+
+        finalImageData = canvas.toDataURL("image/png");
+        preview.src = finalImageData;
+        preview.style.display = "block";
+        downloadBtn.style.display = "block";
+        downloadBtn.scrollIntoView({behavior: "smooth"});
+    };
+
+    img.onerror = () => alert("مش لاقي الصورة pic.png ! حطها في نفس المجلد");
+}
+
+function downloadPDF() {
+    if (!finalImageData) return;
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'px', [1200, 1697]);
+    pdf.addImage(finalImageData, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+    pdf.save("شهادة تقدير - " + document.getElementById("studentName").value.trim() + ".pdf");
+}
+</script>
+
+</body>
+</html>

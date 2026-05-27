@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="csrf-token" content="">
+    <title>عن المطور | معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/logo.png">
+    <style>
+        :root {
+            --primary: #1a4f6e;
+            --primary-dark: #0d3b54;
+            --secondary: #c4a35a;
+            --secondary-dark: #a07d3a;
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-700: #334155;
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(145deg, #f0f4f8 0%, #e2e8f0 100%);
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 650px; margin: 0 auto; }
+        
+        /* ========== الهيدر ========== */
+        .main-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px 30px;
+            border-radius: 28px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            border-bottom: 3px solid var(--secondary);
+        }
+        .avatar {
+            width: 110px; height: 110px; border-radius: 50%; overflow: hidden;
+            border: 4px solid var(--secondary); margin: 0 auto 12px;
+            background: white;
+            box-shadow: 0 0 30px rgba(196,163,90,0.4);
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .main-header h1 { font-size: 1.6rem; color: var(--secondary); margin: 8px 0; }
+        .main-header p { font-size: 1rem; color: white; opacity: 0.9; }
+        
+        /* ========== البطاقات ========== */
+        .card {
+            background: white; border-radius: 24px; overflow: hidden;
+            box-shadow: var(--shadow-lg); margin: 20px 0;
+            transition: transform 0.3s;
+        }
+        .card:hover { transform: translateY(-3px); }
+        .card-header {
+            background: linear-gradient(135deg, var(--secondary), #b8972e);
+            padding: 14px; text-align: center; color: var(--primary);
+        }
+        .card-header h2 { font-size: 1.2rem; font-weight: 800; }
+        .card-content { padding: 20px; text-align: center; }
+        .text { font-size: 0.95rem; line-height: 1.7; color: #334155; }
+        
+        /* ========== المهارات ========== */
+        .skills {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+            margin: 20px 0;
+        }
+        .skill {
+            background: var(--secondary); color: var(--primary); padding: 8px 18px;
+            border-radius: 50px; font-weight: 700; font-size: 0.8rem;
+            box-shadow: 0 4px 12px rgba(196,163,90,0.3);
+        }
+        
+        /* ========== زر واتساب ========== */
+        .whatsapp-btn {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: #25D366; color: white; padding: 14px 32px;
+            border-radius: 60px; font-size: 1rem; font-weight: 700;
+            text-decoration: none; transition: all 0.3s;
+            margin: 15px 0;
+        }
+        .whatsapp-btn:hover { transform: translateY(-3px); filter: brightness(1.05); }
+        .qr { width: 150px; height: 150px; margin: 20px auto; border-radius: 20px; overflow: hidden; border: 3px solid var(--secondary); }
+        .qr img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* ========== الناف بار ========== */
+        .nav-bar {
+            background: rgba(255,255,255,0.96); backdrop-filter: blur(12px);
+            border-top: 2px solid var(--secondary);
+            padding: 12px 0;
+            display: flex; justify-content: center; gap: 40px;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+        }
+        .nav-bar a {
+            text-decoration: none; color: #64748b; font-weight: 600;
+            display: flex; align-items: center; gap: 10px;
+            transition: all 0.25s; padding: 8px 20px; border-radius: 40px;
+        }
+        .nav-bar a i { font-size: 1rem; }
+        .nav-bar a:hover { color: var(--secondary); background: #faf6ed; transform: translateY(-2px); }
+        
+        /* ========== الفوتر ========== */
+        footer { text-align: center; padding: 28px; font-size: 0.75rem; color: #94a3b8; margin-top: 30px; }
+        .heart { color: #b91c1c; animation: heartbeat 1.5s ease infinite; display: inline-block; }
+        @keyframes heartbeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        
+        @media (max-width: 768px) {
+            .nav-bar { gap: 15px; }
+            .nav-bar a span { display: none; }
+            .nav-bar a i { font-size: 1.2rem; }
+            .main-header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="main-header">
+        <div class="avatar">
+            <img src="developer.jpg" alt="أحمد موسى" onerror="this.src='logo.png'">
+        </div>
+        <h1>أحمد موسى</h1>
+        <p>مطور نظام SchoolX بالكامل</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h2>من أنا؟</h2></div>
+        <div class="card-content">
+            <p class="text">أنا أحمد موسى، مطور ويب مصري من الأقصر، قمت ببرمجة وتصميم نظام SchoolX من الصفر بكل حب وعناية لخدمة طلاب وطالبات معهد رعاية الضبعية للتمريض.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h2>لماذا صنعت هذا النظام؟</h2></div>
+        <div class="card-content">
+            <p class="text">لأني شايف إن الطالب المصري يستاهل أحسن وأسرع أدوات رقمية تمكّنه من متابعة دراسته ونتايجه وحضوره بسهولة تامة، بدون تعقيد ولا ورق ولا زحمة.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h2>مجالات خبرتي</h2></div>
+        <div class="card-content">
+            <div class="skills">
+                <div class="skill">تطوير الواجهات</div>
+                <div class="skill">قواعد البيانات</div>
+                <div class="skill">الذكاء الاصطناعي</div>
+                <div class="skill">تجربة المستخدم</div>
+                <div class="skill">نشر التطبيقات</div>
+                <div class="skill">أمن المعلومات</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h2>تواصل معي</h2></div>
+        <div class="card-content">
+            <p style="margin-bottom: 15px;">أي فكرة، اقتراح، مشكلة، أو حتى كلمة شكر… أنا هنا عشانكم 24 ساعة</p>
+            <a href="https://wa.me/qr/LLFTULMCQBNPB1" class="whatsapp-btn" target="_blank">
+                <i class="fab fa-whatsapp"></i> تواصل واتساب
+            </a>
+            <div class="qr">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/qr/LLFTULMCQBNPB1" alt="واتساب أحمد موسى">
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="nav-bar" id="nav-bar"></nav>
+<footer><p>Developed by Ahmed Moussa <span class="heart">❤</span></p></footer>
+
+<script>
+const BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+
+function getLoggedInUser() { const u = sessionStorage.getItem('userData'); return u ? JSON.parse(u) : null; }
+
+function renderNavbar() {
+    const navBar = document.getElementById('nav-bar');
+    if (!navBar) return;
+    const user = getLoggedInUser();
+    const links = [
+        { href: 'index.html', icon: 'fa-solid fa-house', title: 'الرئيسية' },
+        { href: 'Home.html', icon: 'fa-solid fa-chart-line', title: 'النتائج' },
+        { href: 'profile.html', icon: 'fa-solid fa-user', title: 'الملف الشخصي' },
+        { href: 'exams.html', icon: 'fa-solid fa-book-open', title: 'الاختبارات' }
+    ];
+    if (user?.type === 'admin') links.push({ href: 'admin.html', icon: 'fas fa-cogs', title: 'لوحة التحكم' });
+    navBar.innerHTML = links.map(l => `<a href="${l.href}" title="${l.title}"><i class="${l.icon}"></i><span>${l.title}</span></a>`).join('');
+}
+
+renderNavbar();
+</script>
+</body>
+</html>

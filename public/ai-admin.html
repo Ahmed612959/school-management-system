@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تدريب الذكاء الاصطناعي - معهد رعاية الضبعية</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <style>
+        .ai-card { background: white; border-radius: 15px; padding: 25px; margin-bottom: 25px; border: 1px solid #d4af37; }
+        .upload-area { border: 2px dashed #d4af37; border-radius: 15px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .upload-area:hover { background: #f8f9fa; border-color: #1a2526; }
+        .file-list { margin-top: 20px; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px; }
+        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+        .status-trained { background: #28a745; color: white; }
+        .status-untrained { background: #dc3545; color: white; }
+        .stat-box { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px; min-width: 120px; }
+        .stat-number { font-size: 28px; font-weight: bold; color: #1a2526; }
+        .progress-bar { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { width: 0%; height: 100%; background: #d4af37; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <img src="logo.png" alt="شعار المعهد" class="logo">
+        <h1>🧠 لوحة تحكم الذكاء الاصطناعي</h1>
+        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    </header>
+
+    <div class="admin-container">
+        <div class="ai-card">
+            <h2><i class="fas fa-robot"></i> حالة الذكاء الاصطناعي</h2>
+            <div id="aiStatus" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div class="stat-box"><div class="stat-number" id="fileCount">0</div><div class="stat-label">الملفات المدربة</div></div>
+                <div class="stat-box"><div class="stat-number" id="statusBadge">⚠️</div><div class="stat-label">الحالة</div></div>
+            </div>
+        </div>
+
+        <div class="ai-card">
+            <h2><i class="fas fa-upload"></i> تدريب الذكاء الاصطناعي</h2>
+            <p>ارفع ملفات (PDF، Word، Excel، TXT) لتدريب الذكاء الاصطناعي عليها</p>
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #d4af37;"></i>
+                <p>اضغط هنا أو اسحب الملفات</p>
+                <input type="file" id="fileInput" accept=".pdf,.docx,.xlsx,.txt" style="display: none;" multiple>
+            </div>
+            <div id="progressBar" class="progress-bar" style="display: none;">
+                <div class="progress-fill"></div>
+            </div>
+            <div id="uploadResults" class="file-list"></div>
+        </div>
+
+        <div class="ai-card">
+            <h2><i class="fas fa-trash-alt"></i> تنظيف البيانات</h2>
+            <button class="submit-btn" onclick="clearTraining()" style="background: #dc3545; color: white;">
+                <i class="fas fa-trash"></i> حذف جميع بيانات التدريب
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function loadStatus() {
+            try {
+                const res = await fetch('/api/ai/status');
+                const data = await res.json();
+                document.getElementById('fileCount').textContent = data.fileCount || 0;
+                const statusDiv = document.getElementById('statusBadge');
+                if (data.trained) {
+                    statusDiv.innerHTML = '✅ مدرب';
+                    statusDiv.style.color = '#28a745';
+                } else {
+                    statusDiv.innerHTML = '❌ غير مدرب';
+                    statusDiv.style.color = '#dc3545';
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function uploadFiles(files) {
+            const resultsDiv = document.getElementById('uploadResults');
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.display = 'block';
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                document.querySelector('.progress-fill').style.width = `${((i + 1) / files.length) * 100}%`;
+                
+                try {
+                    const res = await fetch('/api/ai/train', { method: 'POST', body: formData });
+                    const result = await res.json();
+                    const div = document.createElement('div');
+                    div.className = 'file-item';
+                    if (result.success) {
+                        div.innerHTML = `<span><i class="fas fa-file"></i> ${file.name}</span><span style="color: #28a745;">✅ تم التدريب (${result.chunksCount || 0} جزء)</span>`;
+                    } else {
+                        div.innerHTML = `<span><i class="fas fa-file"></i> ${file.name}</span><span style="color: #dc3545;">❌ ${result.error}</span>`;
+                    }
+                    resultsDiv.appendChild(div);
+                } catch(e) {
+                    const div = document.createElement('div');
+                    div.className = 'file-item';
+                    div.innerHTML = `<span><i class="fas fa-file"></i> ${file.name}</span><span style="color: #dc3545;">❌ خطأ في الاتصال</span>`;
+                    resultsDiv.appendChild(div);
+                }
+            }
+            progressBar.style.display = 'none';
+            loadStatus();
+        }
+
+        async function clearTraining() {
+            if (!confirm('⚠️ هل أنت متأكد؟ سيتم حذف جميع بيانات التدريب!')) return;
+            await fetch('/api/ai/clear', { method: 'DELETE' });
+            document.getElementById('uploadResults').innerHTML = '';
+            loadStatus();
+            showToast('تم حذف جميع بيانات التدريب', 'success');
+        }
+
+        document.getElementById('uploadArea').onclick = () => document.getElementById('fileInput').click();
+        document.getElementById('fileInput').onchange = (e) => uploadFiles(Array.from(e.target.files));
+        
+        document.getElementById('uploadArea').ondragover = (e) => e.preventDefault();
+        document.getElementById('uploadArea').ondrop = (e) => {
+            e.preventDefault();
+            uploadFiles(Array.from(e.dataTransfer.files));
+        };
+
+        function showToast(msg, type) {
+            Toastify({ text: msg, duration: 3000, gravity: 'top', position: 'right', backgroundColor: type === 'success' ? '#28a745' : '#dc3545' }).showToast();
+        }
+
+        window.logout = () => { localStorage.removeItem('loggedInUser'); window.location.href = 'login.html'; };
+        loadStatus();
+    </script>
+</body>
+</html>

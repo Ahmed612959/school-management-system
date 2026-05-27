@@ -1,0 +1,23 @@
+{
+  "name": "school-management-system",
+  "version": "1.0.0",
+  "description": "نظام متكامل لإدارة معهد رعاية الضبعية الفني للتمريض",
+  "scripts": {
+    "start": "cd api && npm start",
+    "dev": "cd api && npm run dev",
+    "install-all": "npm install && cd api && npm install",
+    "vercel-build": "cd api && npm install"
+  },
+  "keywords": [
+    "school-management",
+    "attendance",
+    "exams",
+    "education",
+    "nursing-school"
+  ],
+  "author": "Ahmed Moussa",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

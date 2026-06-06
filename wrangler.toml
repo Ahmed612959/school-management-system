@@ -1,0 +1,22 @@
+name = "school-management"
+main = "api/index.js"
+compatibility_date = "2024-06-01"
+
+[site]
+bucket = "./public"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[[env.production.secrets]]
+binding = "MONGODB_URI"
+[[env.production.secrets]]
+binding = "JWT_SECRET"
+[[env.production.secrets]]
+binding = "SESSION_SECRET"
+
+[build]
+command = "echo 'Building...'"
+
+[build.upload]
+format = "modules"

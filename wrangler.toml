@@ -1,7 +1,7 @@
 name = "school-management"
 main = "api/index.js"
-compatibility_date = "2024-06-01"
-node_compat = true
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
 
 [site]
 bucket = "./public"
@@ -17,7 +17,4 @@ binding = "JWT_SECRET"
 binding = "SESSION_SECRET"
 
 [build]
-command = "echo 'Building...'"
-
-[build.upload]
-format = "modules"
+command = "echo 'Skipping build'"
